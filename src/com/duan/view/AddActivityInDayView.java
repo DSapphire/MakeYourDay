@@ -151,30 +151,39 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 		setVisible(true);
 	}
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) {///
 		Object source=e.getSource();
 		if(source==cancelButton){
 			this.dispose();
 		}else if(source==okButton){
 			if(checkValid()){
 				try{
-					getTheDay();
+					boolean ifGet=getTheDay();
 					int type=getTypeForRoutine();
+					boolean added=false;
 					if(0==type){
 						MyTask task=getTask();
 						task.setStartTime(getTime(0));
 						task.setEndTime(getTime(1));
-						theDay.getTaskList().add(task);
+						if(theDay.addTask(task))
+							added=true;
 					}else{
 						MyRoutine routine=getRoutine();
 						routine.setType(type);
 						routine.setStartTime(getTime(0));
 						routine.setEndTime(getTime(1));
-						theDay.getRoutineList().add(routine);
+						if(theDay.addRoutine(routine))
+							added=true;
 					}
-					dayList.getDayList().add(theDay);
-					frame.dayView(year, month, day);
-					this.dispose();
+					if(!ifGet){
+						dayList.getDayList().add(theDay);
+					}
+					if(added){
+						frame.dayView(year, month, day);
+						this.dispose();
+					}else{
+						JOptionPane.showMessageDialog(null, "时间冲突，需要调整！");
+					}
 				}catch(Exception e1){
 					JOptionPane.showMessageDialog(null,"输入有误！请检查");
 				}
@@ -213,7 +222,7 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 		routine.setPriority(getPriority());
 		return routine;
 	}
-	private void getTheDay() throws NumberFormatException{
+	private boolean getTheDay() throws NumberFormatException{
 		year=Integer.parseInt(textYear.getText());
 		month=Integer.parseInt(textMonth.getText());
 		day=Integer.parseInt(textDay.getText());
@@ -221,8 +230,10 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 		if(theDay==null){
 			theDay=new MyDay();
 			theDay.getDate().set(year, month-1, day);
+			return false;
 		}
 		theDay.getDate().set(year, month-1, day);
+		return true;
 	}
 	private MyPriority getPriority(){
 		MyPriority priority=new MyPriority();

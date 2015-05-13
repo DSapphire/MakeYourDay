@@ -31,7 +31,7 @@ public class ClockView extends JFrame implements ActionListener {
 	private JLabel labelForTime;
 	private JButton addClockButton, rmClockButton;
 	private Timer timer;
-	private DateFormat df = new SimpleDateFormat("HH : mm : ss    E    M/d/Y");
+	private DateFormat df = new SimpleDateFormat("HH : mm : ss  Y/M/d  E");
 	private MyClockList list;
 
 	public ClockView(MyClockList list) {

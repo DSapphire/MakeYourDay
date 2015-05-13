@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -20,7 +22,7 @@ import com.duan.model.*;
 public class AddCourseView extends JDialog implements ActionListener{
 
 	private static final int WIDTH=300;
-	private static final int HEIGHT=600;
+	private static final int HEIGHT=500;
 	private CourseTableView frame;
 	private MyCourseTable table;
 	private int max=6;
@@ -91,23 +93,23 @@ public class AddCourseView extends JDialog implements ActionListener{
         	bgForWeekType.add(jrForWeekType[i]);
         }	
         
-        updateTime();//
-        labelForTime=new JLabel("上课时间");
+        updateTime();
         boxForDayOfWeek=new JComboBox<String>(dayOfWeek);
         boxForId=new JComboBox<String>(id);
-        jpForTime=new JPanel();
-        jpForTime.add(labelForTime);
-        jpForBox=new JPanel();
-        jpForTime.add(jpForBox);
+        jpForBox=new JPanel(new GridLayout(1,5,5,3));
+        jpForBox.setBorder(BorderFactory.createTitledBorder("上课时间"));
+        jpForBox.add(new JLabel(" "));
         jpForBox.add(boxForDayOfWeek);
         jpForBox.add(boxForId);
+        jpForBox.add(new JLabel(" "));
         
-        jpForCourse=new JPanel(new GridLayout(5,1,10,10));
+        jpForCourse=new JPanel();
+        jpForCourse.setLayout(new BoxLayout(jpForCourse, BoxLayout.Y_AXIS));
         jpForCourse.add(jpForName);
         jpForCourse.add(jpForTeacher);
         jpForCourse.add(jpForPlace);
         jpForCourse.add(jpForType);
-        jpForCourse.add(jpForTime);
+        jpForCourse.add(jpForBox);
         
         addButton=new JButton("添加");
         addButton.addActionListener(this);

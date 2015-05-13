@@ -2,11 +2,8 @@ package com.duan.test;
 
 import java.util.Calendar;
 
-import com.duan.model.MyClock;
-import com.duan.model.MyClockList;
-import com.duan.model.MyTime;
-import com.duan.util.CreateAndRemove;
-import com.duan.view.ClockView;
+import com.duan.model.*;
+import com.duan.view.*;
 
 public class Test {
 

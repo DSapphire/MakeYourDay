@@ -2,17 +2,17 @@ package com.duan.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 
-public class MyDay implements Serializable{
+public class MyDay implements Serializable, Comparable<MyDay>{
 	
 	private ArrayList<MyTime> timeList;
 	private ArrayList<MyCourse> courseList;
 	private ArrayList<MyTask> taskList;
 	private ArrayList<MyRoutine> routineList;
 	private Calendar date;
+	private boolean activityAdded=false;
+	
 	
 	public MyDay() {
 		timeList = new ArrayList<MyTime>();
@@ -31,7 +31,7 @@ public class MyDay implements Serializable{
 		this.timeList.sort(new MyTimeComparator());
 	}
 
-	public void addTask(MyTask task){
+	public boolean addTask(MyTask task){
 		MyTime startTime=task.getStartTime();
 		MyTime endTime=task.getEndTime();
 		if(checkValid(startTime)&&checkValid(endTime)){
@@ -39,13 +39,12 @@ public class MyDay implements Serializable{
 			this.timeList.add(startTime);
 			this.timeList.add(endTime);
 			this.timeList.sort(new MyTimeComparator());
-		}else{
-			//
-			System.out.println("Erro ");
+			return true;
 		}
+		return false;
 	}
 
-	public void addRoutine(MyRoutine routine) {
+	public boolean addRoutine(MyRoutine routine) {
 		MyTime startTime=routine.getStartTime();
 		MyTime endTime=routine.getEndTime();
 		if(checkValid(startTime)&&checkValid(endTime)){
@@ -53,10 +52,9 @@ public class MyDay implements Serializable{
 			this.timeList.add(startTime);
 			this.timeList.add(endTime);
 			this.timeList.sort(new MyTimeComparator());
-		}else{
-			//
-			System.out.println("Erro ");
+			return true;
 		}
+		return false;
 	}
 
 	public boolean checkValid(MyTime time) {
@@ -70,11 +68,7 @@ public class MyDay implements Serializable{
 				}
 			}
 		}
-
 		return valid;
-	}
-	public ArrayList<MyTime> getTimeList() {
-		return timeList;
 	}
 	public ArrayList<MyCourse> getCourseList() {
 		return courseList;
@@ -91,5 +85,15 @@ public class MyDay implements Serializable{
 	}
 	public void setDate(Calendar date) {
 		this.date = date;
+	}
+	public boolean isActivityAdded() {
+		return activityAdded;
+	}
+	public void setActivityAdded(boolean activityAdded) {
+		this.activityAdded = activityAdded;
+	}
+	@Override
+	public int compareTo(MyDay o) {
+		return this.date.compareTo(o.getDate());
 	}
 }

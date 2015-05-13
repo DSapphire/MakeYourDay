@@ -35,8 +35,14 @@ public class MyPriority implements Comparable<MyPriority>, Serializable {
 	public static MyPriority getCoursePriority(int type){
 		MyPriority priority=new MyPriority();
 		priority.setUrgency(3);
-		priority.setImportance(type);
+		priority.setImportance(type*2);
 		return priority;
+	}
+	public boolean isImp(int imp){
+		return this.importance>imp;
+	}
+	public boolean isUrg(int urg){
+		return this.urgency>urg;
 	}
 	@Override
 	public int compareTo(MyPriority p) {

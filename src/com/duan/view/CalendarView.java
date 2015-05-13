@@ -11,7 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -28,7 +27,7 @@ public class CalendarView extends JFrame implements ActionListener {
 	private MyDayList dayList;
 	private Calendar today = Calendar.getInstance();
 	private Timer timer;
-	private DateFormat df = new SimpleDateFormat("HH : mm : ss    E    M/d/Y");
+	private DateFormat df = new SimpleDateFormat("HH : mm : ss  Y/M/d  E");
 	private Font font = new Font(Font.SERIF, Font.PLAIN, 20);
 	private Calendar cal = Calendar.getInstance();
 
@@ -60,7 +59,6 @@ public class CalendarView extends JFrame implements ActionListener {
 		todayButton.addActionListener(this);
 		jpForTime.add(todayButton, BorderLayout.WEST);
 		jpForTime.add(labelForTime, BorderLayout.CENTER);
-
 		jpForButton = new JPanel(new GridLayout(1, 5, 4, 0));
 		preButton = new JButton("上个月");
 		nextButton = new JButton("下个月");
@@ -152,7 +150,7 @@ public class CalendarView extends JFrame implements ActionListener {
 			jpForDay.add(labelForWeek[i]);
 		}
 		for (int i = 0; i < first - 1; i++) {
-			jpForDay.add(new JTextArea(weeks + ""));
+			jpForDay.add(new JLabel());
 		}
 		textForDay = new JTextArea[days];
 		for (int i = 0; i < days; i++) {
@@ -165,8 +163,6 @@ public class CalendarView extends JFrame implements ActionListener {
 			jpForDay.add(textForDay[i]);
 		}
 	}
-
-	// /
 	private void drawTextDay(int year, int month, int i) {
 		MyDay day = this.dayList.getDay(year, month, i + 1);
 		if (day != null) {

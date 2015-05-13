@@ -5,12 +5,9 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Calendar;
-
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -18,7 +15,6 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 
 import com.duan.model.*;
 
@@ -37,6 +33,7 @@ public class DayView extends JDialog implements ActionListener {
 
 	public DayView(CalendarView frame, MyDayList dayList) {
 		setModal(true);
+		setTitle("日视图");
 		this.dayList = dayList;
 		this.frame = frame;
 	}
@@ -55,7 +52,6 @@ public class DayView extends JDialog implements ActionListener {
 		jpForList.setLayout(new GridLayout(2, 1));
 		listCourse = new JList<String>(new CourseDataModel());//
 		listCourse.setBorder(BorderFactory.createTitledBorder("今日课程"));
-
 		listTaskAndRoutine = new JList<String>(new TaskAndRoutineDataModel());//
 		listTaskAndRoutine.setBorder(BorderFactory.createTitledBorder("今日事项"));
 		jspForCourse = new JScrollPane(listCourse);
@@ -94,7 +90,11 @@ public class DayView extends JDialog implements ActionListener {
 			AddActivityInDayView addView=new AddActivityInDayView(this,dayList);
 			addView.addView();
 		} else if (source == rmButton) {
-			int index = listTaskAndRoutine.getSelectedIndex();
+			int index=listCourse.getSelectedIndex();
+			if(index>0&&index<theDay.getCourseList().size()){
+				JOptionPane.showMessageDialog(null, "删除课程需要前往课程表删除！");
+			}
+			index = listTaskAndRoutine.getSelectedIndex();
 			int max = theDay.getTaskList().size()
 					+ theDay.getRoutineList().size();
 			if (index >= 0 && index < max) {
