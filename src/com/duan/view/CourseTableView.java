@@ -35,7 +35,6 @@ public class CourseTableView extends JFrame implements ActionListener {
 
 	public void courseTableRepaint() {
 		setSize(WIDTH, HEIGHT);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 
 		jpForCourse = new JPanel(new GridLayout(7, 7));

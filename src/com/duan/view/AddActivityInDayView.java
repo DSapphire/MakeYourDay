@@ -46,7 +46,9 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
     		new JRadioButton("周四"),new JRadioButton("周五"),
     		new JRadioButton("周六"),new JRadioButton("周日"),
     };
-	
+	public AddActivityInDayView(MyDayList dayList) {
+		this.dayList=dayList;
+	}
 	public AddActivityInDayView(DayView frame, MyDayList dayList) {
 		setModal(true);
 		setTitle("添加事项");

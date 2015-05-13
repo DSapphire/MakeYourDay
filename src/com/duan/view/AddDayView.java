@@ -19,7 +19,8 @@ import com.duan.model.MyDayList;
 public class AddDayView extends JDialog implements KeyListener,ActionListener {
 	private static final int WIDTH =300;
 	private static final int HEIGHT =140;
-	private CalendarView frame;
+	private CalendarView frame=null;
+	private MyDayList dayList;
 	private Calendar today=Calendar.getInstance();
 	private int year,month,day;
 	private JPanel mainPanel,jpForDate,jpForButton;
@@ -27,10 +28,14 @@ public class AddDayView extends JDialog implements KeyListener,ActionListener {
 	private JTextField textDay, textMonth,textYear;
 	private JButton okButton,cancelButton;
 	
-	public AddDayView(CalendarView frame) {
+	public AddDayView(MyDayList dayList) {
+		this(null,dayList);
+	}
+	public AddDayView(CalendarView frame,MyDayList dayList) {
 		setTitle("选择日期");
         setModal(true);
         this.frame=frame;
+        this.dayList=dayList;
 	}
 	public void addDayView(){
 		setSize(WIDTH, HEIGHT);
@@ -81,7 +86,8 @@ public class AddDayView extends JDialog implements KeyListener,ActionListener {
                 month = Integer.parseInt(textMonth.getText());
                 day = Integer.parseInt(textDay.getText());
                 if(checkValid()){
-                	frame.drawDayView(year, month, day);
+                	DayView dayView = new DayView(frame, dayList);//
+            		dayView.dayView(year, month, day);
                     dispose();
                 }else{
                 	JOptionPane.showMessageDialog(null, "输入日期格式不正确");

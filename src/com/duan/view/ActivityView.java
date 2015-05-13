@@ -13,8 +13,8 @@ import javax.swing.JScrollPane;
 import com.duan.model.*;
 
 public class ActivityView extends JFrame {
-	private static final int WIDTH = 500;
-	private static final int HEIGHT = 500;
+	private static final int WIDTH = 400;
+	private static final int HEIGHT = 400;
 	private MyDayList dayList;
 	private Calendar today = Calendar.getInstance();
 	private ArrayList<MyDay> list;
@@ -34,7 +34,6 @@ public class ActivityView extends JFrame {
 
 	public void activityView() {
 		setSize(WIDTH, HEIGHT);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		listForImpAndUrg = new JList<>(getVectorForList(true, true));
 		lisForImpNUrg = new JList<>(getVectorForList(true, false));
 		lisForNImpUrg = new JList<>(getVectorForList(false, true));

@@ -126,22 +126,31 @@ public class MainView extends JFrame implements ActionListener {
 	public void closingMainView(){
 		saveData();
 	}
+	
+	//test
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source=e.getSource();
 		if(source==calVButton){
-			
+			CalendarView cView=new CalendarView(dayList);
+			cView.calendarViewRepaint();
 		}else if(source==tableVButton){
-			
+			CourseTableView tView=new CourseTableView(new MyCourseTable());//
+			tView.courseTableRepaint();
 		}else if(source==clockVButton){
-			
+			ClockView cView=new ClockView(new MyClockList());
+			cView.clockViewRepaint();
 		}else if(source==actVButton){
-			
+			ActivityView aView=new ActivityView(new MyDayList(), 7);
+			aView.activityView();
 		}else if(source==taskVButton){
-			
+			TaskView taskView=new TaskView(dayList);
+			taskView.taskView();
 		}else if(source==routineVButton){
-			
+			RoutineView rView=new RoutineView(dayList);
+			rView.routineView();
 		}
+		//loadMainView();
 	}
 	
 	private void initTimer() {

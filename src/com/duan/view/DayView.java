@@ -30,7 +30,9 @@ public class DayView extends JDialog implements ActionListener {
 	private JList<String> listCourse, listTaskAndRoutine;
 	private JButton backButton, addButton, rmButton;
 	private JLabel labelForTime;
-
+	public DayView( MyDayList dayList) {
+		this(null,dayList);
+	}
 	public DayView(CalendarView frame, MyDayList dayList) {
 		setModal(true);
 		setTitle("»’ ”Õº");
@@ -84,7 +86,8 @@ public class DayView extends JDialog implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == backButton) {
-			frame.calendarViewRepaint();
+			if(frame!=null)
+				frame.calendarViewRepaint();
 			dispose();
 		} else if (source == addButton) {
 			AddActivityInDayView addView=new AddActivityInDayView(this,dayList);

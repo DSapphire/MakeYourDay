@@ -1,6 +1,5 @@
 package com.duan.util;
 
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,11 +7,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-
 import com.duan.model.*;
 
 public class SaveAndRead {
+	private static boolean checkFile(String file) {
+		File tfile = new File(file);
+		if (!tfile.exists()) {
+			return false;
+		}
+		return true;
+	}
 	public static void saveCourseTable(MyCourseTable table) throws IOException {
 		final String dir = "res/activity";
 		final String file = "res/activity/table.dat";
@@ -30,15 +34,22 @@ public class SaveAndRead {
 		oos.flush();
 		oos.close();
 	}
-	public static MyCourseTable readCourseTable() throws IOException,
-			ClassNotFoundException {
+	public static MyCourseTable readCourseTable(){
 		final String file = "res/activity/table.dat";
 		ObjectInputStream ois;
-		ois = new ObjectInputStream(new FileInputStream(file));
-		MyCourseTable table = (MyCourseTable) ois.readObject();
-		// System.out.println(table);
-		ois.close();
-		return table;
+		MyCourseTable table;
+		if(checkFile(file)){
+			try {
+				ois = new ObjectInputStream(new FileInputStream(file));
+				table = (MyCourseTable) ois.readObject();
+				ois.close();
+				return table;
+			} catch (IOException e) {
+			}catch (ClassNotFoundException e1) {
+			}
+			
+		}
+		return null;
 	}
 	
 	public static void saveClockList(MyClockList clockList) throws IOException {
@@ -58,14 +69,20 @@ public class SaveAndRead {
 		oos.flush();
 		oos.close();
 	}
-	public static MyClockList readClockList() throws IOException,
-			ClassNotFoundException {
+	public static MyClockList readClockList(){
 		final String file = "res/activity/clockList.dat";
 		ObjectInputStream ois;
-		ois = new ObjectInputStream(new FileInputStream(file));
-		MyClockList clockList = (MyClockList) ois.readObject();
-		ois.close();
-		return clockList;
+		if(checkFile(file)){
+			try{
+				ois = new ObjectInputStream(new FileInputStream(file));
+				MyClockList clockList = (MyClockList) ois.readObject();
+				ois.close();
+				return clockList;
+			}catch (IOException e) {
+			}catch (ClassNotFoundException e1) {
+			}
+		}
+		return null;
 	}
 	
 	public static void saveDayList(MyDayList dayList) throws IOException {
@@ -85,49 +102,65 @@ public class SaveAndRead {
 		oos.flush();
 		oos.close();
 	}
-	public static MyDayList readDayList() throws IOException,
-			ClassNotFoundException {
+	public static MyDayList readDayList(){
 		final String file = "res/activity/dayList.dat";
 		ObjectInputStream ois;
-		ois = new ObjectInputStream(new FileInputStream(file));
-		MyDayList dayList = (MyDayList) ois.readObject();
-		ois.close();
-		return dayList;
+		if(checkFile(file)){
+			try{
+				ois = new ObjectInputStream(new FileInputStream(file));
+				MyDayList dayList = (MyDayList) ois.readObject();
+				ois.close();
+				return dayList;
+			}catch (IOException e) {
+			}catch (ClassNotFoundException e1) {
+			}
+		}
+		return null;
 	}
 	
-	public static void saveTask(ArrayList<MyTask> taskList) throws FileNotFoundException, IOException{
-		final String afile = "res/activity/task.dat";
-		final String bfile= "res/activity/taskhistory.dat";
-		final String adir="res/activity";
-		File tdir=new File(adir);
-		File tfile=new File(afile);
-		File hfile=new File(bfile);
+	public static void saveTaskList(MyTaskList taskList) throws FileNotFoundException, IOException{
+		final String file = "res/activity/task.dat";
+		final String dir="res/activity";
+		File tdir=new File(dir);
+		File tfile=new File(file);
 		if(!tdir.exists()){
 			tdir.mkdirs();
 		}
 		if(!tfile.exists()){
 			tfile.createNewFile();
 		}
-		if(!hfile.exists()){
-			hfile.createNewFile();
-		}
 		ObjectOutputStream oos = new ObjectOutputStream(
-				new FileOutputStream(afile));
-		ObjectOutputStream oos2 = new ObjectOutputStream(
-				new FileOutputStream(bfile,true));
-		for(MyTask task:taskList){
-			if(task.isFinished())
-				oos2.writeObject(task);
-			else
-				oos.writeObject(task);
-			oos.flush();
-			oos2.flush();
-		}
+				new FileOutputStream(file));
+		oos.writeObject(taskList);
+		oos.flush();
 		oos.close();
-		oos2.close();
 	}
-
-	public static void saveRoutine(ArrayList<MyRoutine> routineList) throws FileNotFoundException, IOException{
+	public static MyTaskList readTaskList(){
+		final String file = "res/activity/task.dat";
+		MyTaskList taskList;
+		ObjectInputStream ois;
+		if(checkFile(file)){
+			try{
+				ois = new ObjectInputStream(
+						new FileInputStream(file));
+				taskList=(MyTaskList)ois.readObject();
+				ois.close();
+			return taskList;
+			}catch (IOException e) {
+			}catch (ClassNotFoundException e1) {
+			}
+		}
+		return null;
+		// try{
+		// 	while(true){
+		// 		MyTask task = (MyTask)ois.readObject();
+		// 		list.add(task);
+		// 	}
+		// }catch(EOFException e){
+			
+		// }
+	}
+	public static void saveRoutineList(MyRoutineList routineList) throws FileNotFoundException, IOException{
 		final String file = "res/activity/routine.dat";
 		final String adir="res/activity";
 		File tdir=new File(adir);
@@ -140,47 +173,25 @@ public class SaveAndRead {
 		}
 		ObjectOutputStream oos = new ObjectOutputStream(
 				new FileOutputStream(file));
-		for(MyRoutine routine:routineList){
-			oos.writeObject(routine);
-			oos.flush();
-		}
+		oos.writeObject(routineList);
+		oos.flush();
 		oos.close();
 	}
-	public static ArrayList<MyTask> readTask() throws IOException, Throwable{
-		final String file = "res/activity/task.dat";
-		ArrayList<MyTask> list=new ArrayList<MyTask> ();
-		ObjectInputStream ois;
-		ois = new ObjectInputStream(
-				new FileInputStream(file));
-		
-		try{
-			while(true){
-				MyTask task = (MyTask)ois.readObject();
-				list.add(task);
-			}
-		}catch(EOFException e){
-			
-		}
-		ois.close();
-		return list;
-	}
-	public static ArrayList<MyRoutine> readRoutine() throws IOException, Throwable{
+	public static MyRoutineList readRoutineList(){
 		final String file = "res/activity/routine.dat";
-		ArrayList<MyRoutine> list=new ArrayList<MyRoutine> ();
+		MyRoutineList routineList;
 		ObjectInputStream ois;
-		ois = new ObjectInputStream(
-				new FileInputStream(file));
-		
-		try{
-			while(true){
-				MyRoutine routine = (MyRoutine)ois.readObject();
-				list.add(routine);
+		if(checkFile(file)){
+			try{
+				ois = new ObjectInputStream(
+						new FileInputStream(file));
+				routineList = (MyRoutineList)ois.readObject();
+				ois.close();
+				return routineList;
+			}catch (IOException e) {
+			}catch (ClassNotFoundException e1) {
 			}
-		}catch(EOFException e){
-			
 		}
-		
-		ois.close();
-		return list;
+		return null;
 	}
 }

@@ -13,7 +13,6 @@ public class MyDay implements Serializable, Comparable<MyDay>{
 	private Calendar date;
 	private boolean activityAdded=false;
 	
-	
 	public MyDay() {
 		timeList = new ArrayList<MyTime>();
 		courseList = new ArrayList<MyCourse>();

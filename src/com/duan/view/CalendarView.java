@@ -22,8 +22,9 @@ import com.duan.model.*;
 
 public class CalendarView extends JFrame implements ActionListener {
 
-	private static final int WIDTH = 500;
+	private static final int WIDTH = 550;
 	private static final int HEIGHT = 600;
+	
 	private MyDayList dayList;
 	private Calendar today = Calendar.getInstance();
 	private Timer timer;
@@ -44,9 +45,8 @@ public class CalendarView extends JFrame implements ActionListener {
 
 	public void calendarViewRepaint() {
 		setSize(WIDTH, HEIGHT);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
-
+		
 		jpForDay = new JPanel();
 		cal = Calendar.getInstance();
 		drawDay(cal);
@@ -92,10 +92,10 @@ public class CalendarView extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == addButton) {
-			AddDayView addView = new AddDayView(this);
+			AddDayView addView = new AddDayView(this,dayList);
 			addView.addDayView();
 		} else if (source == lookButton) {
-			AddDayView addView = new AddDayView(this);
+			AddDayView addView = new AddDayView(this,dayList);
 			addView.addDayView();
 		} else if (source == todayButton) {
 			cal = Calendar.getInstance();
@@ -133,7 +133,7 @@ public class CalendarView extends JFrame implements ActionListener {
 		int days = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 		int first = cal.get(Calendar.DAY_OF_WEEK);
 		int weeks = (days + first - 1 + 6) / 7;// +6
-		int month = cal.get(Calendar.MONTH);
+		int month = cal.get(Calendar.MONTH)+1;
 		int year = cal.get(Calendar.YEAR);
 
 		jpForDay.setLayout(new GridLayout(weeks + 1, 7, 2, 2));
@@ -169,12 +169,12 @@ public class CalendarView extends JFrame implements ActionListener {
 			int task = day.getTaskList().size();
 			int course = day.getCourseList().size();
 			int routine = day.getRoutineList().size();
-			textForDay[i].append("\r\nTask:" + task);
 			textForDay[i].append("\r\nCourse:" + course);
-			textForDay[i].append("\r\nCourse:" + routine);
+			textForDay[i].append("\r\nTask:" + task);
+			textForDay[i].append("\r\nRoutine:" + routine);
 		}
 		if (i == today.get(Calendar.DAY_OF_MONTH) - 1
-				&& month == today.get(Calendar.MONTH)
+				&& month-1 == today.get(Calendar.MONTH)
 				&& year == today.get(Calendar.YEAR)) {
 			textForDay[i].setBackground(Color.RED);
 		}

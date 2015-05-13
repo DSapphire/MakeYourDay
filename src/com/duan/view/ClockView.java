@@ -24,7 +24,7 @@ import com.duan.model.*;
 public class ClockView extends JFrame implements ActionListener {
 
 	private static final int WIDTH = 300;
-	private static final int HEIGHT = 530;
+	private static final int HEIGHT = 400;
 	private JScrollPane jspForClockList;
 	private JPanel jpForTime, jpForButton, mainPanel;
 	private JList<String> clockJList;
@@ -38,14 +38,12 @@ public class ClockView extends JFrame implements ActionListener {
 		super("ƒ÷÷”");
 		this.list = list;
 	}
-
 	public void setList(MyClockList list) {
 		this.list = list;
 	}
 
 	public void clockViewRepaint() {
 		setSize(WIDTH, HEIGHT);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		
 		jpForTime = new JPanel();
