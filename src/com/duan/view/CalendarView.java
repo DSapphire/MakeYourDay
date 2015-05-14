@@ -13,48 +13,42 @@ import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import com.duan.model.*;
-
-public class CalendarView extends JFrame implements ActionListener {
-
+public class CalendarView extends JDialog implements ActionListener {
 	private static final int WIDTH = 550;
 	private static final int HEIGHT = 600;
-	
+	private MyData data;
 	private MyDayList dayList;
 	private Calendar today = Calendar.getInstance();
 	private Timer timer;
 	private DateFormat df = new SimpleDateFormat("HH : mm : ss  Y/M/d  E");
 	private Font font = new Font(Font.SERIF, Font.PLAIN, 20);
 	private Calendar cal = Calendar.getInstance();
-
 	private JPanel mainPanel, jpForTime, jpForDay, jpForButton;
 	private JLabel labelForTime, labelForMonth;
 	private JButton addButton, lookButton, todayButton, preButton, nextButton;
 	private JLabel[] labelForWeek;
 	private JTextArea[] textForDay;
-
-	public CalendarView(MyDayList dayList) {
-		super("日历视图");
-		this.dayList = dayList;
+	public CalendarView(MyData data) {
+		setTitle("日历视图");
+		setModal(true);
+		this.data=data;
+		this.dayList=data.getDayList();
 	}
-
-	public void calendarViewRepaint() {
+	public void loadView() {
 		setSize(WIDTH, HEIGHT);
 		setLocationRelativeTo(null);
-		
 		jpForDay = new JPanel();
-		cal = Calendar.getInstance();
-		drawDay(cal);
+		updateView();
 		jpForTime = new JPanel(new BorderLayout());
 		labelForTime = new JLabel();
 		labelForTime.setFont(font);
 		labelForTime.setHorizontalAlignment(JLabel.CENTER);
-
 		todayButton = new JButton("今日");
 		todayButton.addActionListener(this);
 		jpForTime.add(todayButton, BorderLayout.WEST);
@@ -78,7 +72,6 @@ public class CalendarView extends JFrame implements ActionListener {
 		jpForButton.add(labelForMonth);
 		jpForButton.add(lookButton);
 		jpForButton.add(nextButton);
-
 		mainPanel = new JPanel(new BorderLayout());
 		mainPanel.add(jpForDay, BorderLayout.CENTER);
 		mainPanel.add(jpForTime, BorderLayout.NORTH);
@@ -87,16 +80,19 @@ public class CalendarView extends JFrame implements ActionListener {
 		initTimer();
 		setVisible(true);
 	}
-
+	public void updateView(){
+		cal = Calendar.getInstance();
+		drawDay(cal);
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == addButton) {
-			AddDayView addView = new AddDayView(this,dayList);
-			addView.addDayView();
+			AddDayView addView = new AddDayView(this,data);
+			addView.loadView();
 		} else if (source == lookButton) {
-			AddDayView addView = new AddDayView(this,dayList);
-			addView.addDayView();
+			AddDayView addView = new AddDayView(this,data);
+			addView.loadView();
 		} else if (source == todayButton) {
 			cal = Calendar.getInstance();
 			labelForMonth.setText(cal.get(Calendar.YEAR) + "年"
@@ -115,7 +111,6 @@ public class CalendarView extends JFrame implements ActionListener {
 			drawDay(cal);
 		}
 	}
-
 	private void initTimer() {
 		timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
@@ -126,7 +121,6 @@ public class CalendarView extends JFrame implements ActionListener {
 			}
 		}, 0, 1000L);
 	}
-
 	private void drawDay(Calendar cal) {
 		jpForDay.removeAll();
 		cal.set(Calendar.DAY_OF_MONTH, 1);
@@ -135,7 +129,6 @@ public class CalendarView extends JFrame implements ActionListener {
 		int weeks = (days + first - 1 + 6) / 7;// +6
 		int month = cal.get(Calendar.MONTH)+1;
 		int year = cal.get(Calendar.YEAR);
-
 		jpForDay.setLayout(new GridLayout(weeks + 1, 7, 2, 2));
 		jpForDay.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		labelForWeek = new JLabel[7];
@@ -162,26 +155,34 @@ public class CalendarView extends JFrame implements ActionListener {
 					.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 			jpForDay.add(textForDay[i]);
 		}
+		jpForDay.revalidate();
 	}
 	private void drawTextDay(int year, int month, int i) {
 		MyDay day = this.dayList.getDay(year, month, i + 1);
-		if (day != null) {
-			int task = day.getTaskList().size();
-			int course = day.getCourseList().size();
-			int routine = day.getRoutineList().size();
-			textForDay[i].append("\r\nCourse:" + course);
-			textForDay[i].append("\r\nTask:" + task);
-			textForDay[i].append("\r\nRoutine:" + routine);
+		if(day==null){
+			day=new MyDay();
+			day.getDate().set(year, month-1, i+1);
+			this.dayList.getDayList().add(day);
 		}
+		day.addRoutine(data.getRoutineList());
+		day.addCourse(data.getTable());
+		int task = day.getTaskList().size();
+		int course = day.getCourseList().size();
+		int routine = day.getRoutineList().size();
+		if(course>0)
+			textForDay[i].append("\r\nCourse:" + course);
+		if(task>0)
+			textForDay[i].append("\r\nTask:" + task);
+		if(routine>0)
+			textForDay[i].append("\r\nRoutine:" + routine);
 		if (i == today.get(Calendar.DAY_OF_MONTH) - 1
 				&& month-1 == today.get(Calendar.MONTH)
 				&& year == today.get(Calendar.YEAR)) {
 			textForDay[i].setBackground(Color.RED);
 		}
 	}
-
 	public void drawDayView(int year, int month, int day) {
-		DayView dayView = new DayView(this, dayList);
+		DayView dayView = new DayView(this, data);
 		dayView.dayView(year, month, day);
 	}
 }

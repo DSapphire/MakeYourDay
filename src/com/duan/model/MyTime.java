@@ -87,7 +87,7 @@ public class MyTime implements Serializable,Comparable<MyTime>{
 	}
 	public boolean before(MyTime t){
 		boolean isBefore=true;
-		if(this.compareTo(t)>-1){
+		if(this.compareTo(t)>0){
 			isBefore=false;
 		}
 		return isBefore;

@@ -16,29 +16,23 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-
 import com.duan.model.*;
-
 public class AddCourseView extends JDialog implements ActionListener{
-
 	private static final int WIDTH=300;
 	private static final int HEIGHT=500;
 	private CourseTableView frame;
 	private MyCourseTable table;
 	private int max=6;
-	
 	private JPanel jpForButton,jpForCourse,mainPanel;
-	private JPanel jpForName,jpForPlace,jpForTeacher,jpForTime,jpForType,jpForBox,jpForWeekType,jpForCtype;
-	private JLabel labelForName, labelForPlace,labelForTeacher,labelForTime,title;
+	private JPanel jpForName,jpForPlace,jpForTeacher,jpForType,jpForBox,jpForWeekType,jpForCtype;
+	private JLabel labelForName, labelForPlace,labelForTeacher,title;
     private JTextField textForName, textForPlace,textForTeacher;
     private JRadioButton[] jrForType,jrForWeekType;
     private ButtonGroup bgForType,bgForWeekType;
     private JComboBox<String> boxForDayOfWeek,boxForId;
-
 	private JButton addButton,cancelButton;
 	private Font font = new Font(Font.SERIF, Font.PLAIN, 20);
     private String[] dayOfWeek,id;
-    
 	public AddCourseView(CourseTableView sframe,MyCourseTable table,int max) {
 		super(sframe);
 		setTitle("添加课程");
@@ -54,19 +48,16 @@ public class AddCourseView extends JDialog implements ActionListener{
         jpForName=new JPanel();
         jpForName.add(labelForName);
         jpForName.add(textForName);
-        
         labelForTeacher=new JLabel("任课教师");
         textForTeacher=new JTextField(10);
         jpForTeacher=new JPanel();
         jpForTeacher.add(labelForTeacher);
         jpForTeacher.add(textForTeacher);
-        
         labelForPlace=new JLabel("上课地点");
         textForPlace=new JTextField(10);
         jpForPlace=new JPanel();
         jpForPlace.add(labelForPlace);
         jpForPlace.add(textForPlace);
-        
         jpForType=new JPanel(new GridLayout(2, 1,10, 10));
         jpForWeekType=new JPanel(new GridLayout(2,3,10, 10));
         jpForCtype=new JPanel(new GridLayout(1,3,10, 10));
@@ -91,8 +82,7 @@ public class AddCourseView extends JDialog implements ActionListener{
         for(int i=0;i<jrForWeekType.length;i++){
         	jpForWeekType.add(jrForWeekType[i]);
         	bgForWeekType.add(jrForWeekType[i]);
-        }	
-        
+        }
         updateTime();
         boxForDayOfWeek=new JComboBox<String>(dayOfWeek);
         boxForId=new JComboBox<String>(id);
@@ -102,7 +92,6 @@ public class AddCourseView extends JDialog implements ActionListener{
         jpForBox.add(boxForDayOfWeek);
         jpForBox.add(boxForId);
         jpForBox.add(new JLabel(" "));
-        
         jpForCourse=new JPanel();
         jpForCourse.setLayout(new BoxLayout(jpForCourse, BoxLayout.Y_AXIS));
         jpForCourse.add(jpForName);
@@ -110,7 +99,6 @@ public class AddCourseView extends JDialog implements ActionListener{
         jpForCourse.add(jpForPlace);
         jpForCourse.add(jpForType);
         jpForCourse.add(jpForBox);
-        
         addButton=new JButton("添加");
         addButton.addActionListener(this);
         cancelButton=new JButton("取消");
@@ -133,23 +121,23 @@ public class AddCourseView extends JDialog implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if(source==addButton){
-			if(addCourse()){
-				this.frame.courseTableRepaint();
-				dispose();
+			if(checkValid()){
+				if(addCourse()){
+					this.frame.updateView();//
+					dispose();
+				}else{
+					JOptionPane.showMessageDialog(null, "课程时间冲突！");
+				}
 			}else{
 				JOptionPane.showMessageDialog(null, "请填写必要信息！");
 			}
-		}else if(source==cancelButton){
+		}else if(source==cancelButton)
 			dispose();
-		}
-		
 	}
 	private  boolean addCourse(){
-		if(checkValid()){
-			MyCourse course=getCourseFromView();
-			if(table.addCourse(course))
-				return true;
-		}
+		MyCourse course=getCourseFromView();
+		if(table.addCourse(course))
+			return true;
 		return false;
 	}
 	private MyCourse getCourseFromView(){
@@ -157,7 +145,6 @@ public class AddCourseView extends JDialog implements ActionListener{
 		course.setCname(textForName.getText());
 		course.setTeacher(textForPlace.getText());
 		course.setPlace(textForPlace.getText());
-		
 		for(int i=0;i<jrForType.length;i++){
 			if(jrForType[i].isSelected())
 				course.setCtype(jrForType[i].getText());
@@ -169,7 +156,6 @@ public class AddCourseView extends JDialog implements ActionListener{
 		course.setTableId(boxForId.getSelectedIndex()+1);
 		course.setDayOfWeek(boxForDayOfWeek.getSelectedIndex()+1);
 		course.updateTime();
-		
 		return course;
 	}
 	private boolean checkValid(){

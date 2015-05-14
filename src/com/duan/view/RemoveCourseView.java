@@ -13,19 +13,16 @@ import javax.swing.JPanel;
 import com.duan.model.*;
 
 public class RemoveCourseView extends JDialog implements ActionListener {
-
 	private static final int WIDTH=300;
 	private static final int HEIGHT=150;
 	private CourseTableView frame;
 	private MyCourseTable table;
 	private int max=6;
-	
 	private String[] dayOfWeek,id;
 	private JPanel jpForButton,jpForCourse,mainPanel;
 	private JLabel title;
 	private JButton rmButton,backButton;
 	private JComboBox<String> boxForDayOfWeek,boxForId;
-	
 	public RemoveCourseView(CourseTableView sframe,MyCourseTable table,int max) {
 		setTitle("删除课程");
         setModal(true);
@@ -41,7 +38,6 @@ public class RemoveCourseView extends JDialog implements ActionListener {
         boxForId=new JComboBox<String>(id);
         jpForCourse.add(boxForDayOfWeek);
         jpForCourse.add(boxForId);
-		
 		rmButton=new JButton("删除");
 		rmButton.addActionListener(this);
 		backButton=new JButton("返回");
@@ -65,11 +61,11 @@ public class RemoveCourseView extends JDialog implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == backButton){
-			frame.courseTableRepaint();
+			frame.updateView();
 			dispose();
 		}else if(rmButton==source){
 			if(rmCourse()){
-				frame.courseTableRepaint();
+				frame.updateView();
 			}else{
 				JOptionPane.showMessageDialog(null, "没有对应课程，请重新选择");
 			}

@@ -4,7 +4,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -15,23 +14,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-
-import com.duan.model.MyDay;
-import com.duan.model.MyDayList;
-import com.duan.model.MyPriority;
-import com.duan.model.MyRoutine;
-import com.duan.model.MyTask;
-import com.duan.model.MyTime;
+import com.duan.model.*;
 
 public class AddActivityInDayView extends JDialog implements ActionListener {
 	private static final int WIDTH = 320;
 	private static final int HEIGHT = 500;
+	private MyData data;
 	private MyDayList dayList;
 	private MyDay theDay;
 	private DayView frame;
-	
 	private int year,month,day;
-	
 	private JPanel mainPanel,jpForDate,jpForButton,jpForRButton,
 					jpForPriority,jpForDDL,jpForAdd,jpForTimeS,jpForTimeE;
 	private JLabel labelForDay,labelForMonth,labelForYear;
@@ -39,26 +31,25 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 	private JTextField textDay, textMonth,textYear,ddlDay, ddlMonth,ddlYear,
 						textName,textPlace,textHourS,textMinS,textHourE,textMinE;
 	private JButton okButton,cancelButton;
-	
 	private JRadioButton[] jr={new JRadioButton("单次",true),
-			new JRadioButton("周一"),
+			new JRadioButton("周日"),new JRadioButton("周一"),
     		new JRadioButton("周二"),new JRadioButton("周三"),
     		new JRadioButton("周四"),new JRadioButton("周五"),
-    		new JRadioButton("周六"),new JRadioButton("周日"),
+    		new JRadioButton("周六"),
     };
-	public AddActivityInDayView(MyDayList dayList) {
-		this.dayList=dayList;
+	public AddActivityInDayView(MyData data) {
+		this(null,data);
 	}
-	public AddActivityInDayView(DayView frame, MyDayList dayList) {
+	public AddActivityInDayView(DayView frame, MyData data) {
 		setModal(true);
 		setTitle("添加事项");
-		this.dayList = dayList;
+		this.data=data;
+		this.dayList = data.getDayList();
 		this.frame = frame;
 	}
 	public void addView(){
 		setSize(WIDTH, HEIGHT);
 		theDay=frame.getTheDay();
-		
 		jpForDate=new JPanel();
 		jpForDate.setBorder(BorderFactory.createTitledBorder("日期设置"));
 		textDay=new JTextField(4);
@@ -76,7 +67,6 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 		jpForDate.add(labelForMonth);
 		jpForDate.add(textDay);
 		jpForDate.add(labelForDay);
-		
 		jpForAdd=new JPanel(new GridLayout(3,2));
 		textName=new JTextField();
 		textName.setBorder(BorderFactory.createTitledBorder("事项名称"));
@@ -114,7 +104,6 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 		jpForAdd.add(jpForTimeE);
 		jpForAdd.add(new JLabel());
 		jpForAdd.add(jpForPriority);
-
 		jpForDDL=new JPanel();
 		jpForDDL.setBorder(BorderFactory.createTitledBorder("截止日期"));
 		ddlDay=new JTextField(2);
@@ -129,7 +118,6 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 		jpForDDL.add(new JLabel("月"));
 		jpForDDL.add(ddlDay);
 		jpForDDL.add(new JLabel("日"));
-		
 		jpForRButton=new JPanel(new GridLayout(2,4));
 		for(int i=0;i<jr.length;i++){
 			jpForRButton.add(jr[i]);
@@ -149,7 +137,7 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 		mainPanel.add(jpForRButton);
 		mainPanel.add(jpForButton);
 		setContentPane(mainPanel);
-		setLocationRelativeTo(null);
+		setLocationRelativeTo(this.frame);
 		setVisible(true);
 	}
 	@Override
@@ -167,14 +155,14 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 						MyTask task=getTask();
 						task.setStartTime(getTime(0));
 						task.setEndTime(getTime(1));
-						if(theDay.addTask(task))
+						if(data.addTask(theDay, task));
 							added=true;
 					}else{
 						MyRoutine routine=getRoutine();
 						routine.setType(type);
 						routine.setStartTime(getTime(0));
 						routine.setEndTime(getTime(1));
-						if(theDay.addRoutine(routine))
+						if(data.addRoutine(theDay, routine))
 							added=true;
 					}
 					if(!ifGet){

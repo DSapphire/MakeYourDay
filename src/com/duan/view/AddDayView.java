@@ -6,40 +6,35 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Calendar;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import com.duan.model.MyDayList;
-
+import com.duan.model.*;
 public class AddDayView extends JDialog implements KeyListener,ActionListener {
 	private static final int WIDTH =300;
 	private static final int HEIGHT =140;
+	private MyData data;
 	private CalendarView frame=null;
-	private MyDayList dayList;
 	private Calendar today=Calendar.getInstance();
 	private int year,month,day;
 	private JPanel mainPanel,jpForDate,jpForButton;
 	private JLabel labelForDay,labelForMonth,labelForYear,title;
 	private JTextField textDay, textMonth,textYear;
 	private JButton okButton,cancelButton;
-	
-	public AddDayView(MyDayList dayList) {
-		this(null,dayList);
+	public AddDayView(MyData data) {
+		this(null,data);
 	}
-	public AddDayView(CalendarView frame,MyDayList dayList) {
+	public AddDayView(CalendarView frame,MyData data) {
 		setTitle("选择日期");
         setModal(true);
         this.frame=frame;
-        this.dayList=dayList;
+        this.data=data;
 	}
-	public void addDayView(){
+	public void loadView(){
 		setSize(WIDTH, HEIGHT);
-		
 		jpForDate=new JPanel();
 		textYear=new JTextField(4);
 		textMonth=new JTextField(2);
@@ -59,7 +54,6 @@ public class AddDayView extends JDialog implements KeyListener,ActionListener {
 		textYear.setText(today.get(Calendar.YEAR)+"");
 		textMonth.setText((today.get(Calendar.MONTH)+1)+"");
 		textDay.setText(today.get(Calendar.DAY_OF_MONTH)+"");
-		
 		okButton=new JButton("确定");
 		okButton.addActionListener(this);
 		cancelButton=new JButton("取消");
@@ -67,14 +61,13 @@ public class AddDayView extends JDialog implements KeyListener,ActionListener {
 		jpForButton=new JPanel();
 		jpForButton.add(okButton);
 		jpForButton.add(cancelButton);
-		
 		title=new JLabel("请输入日期：");
 		mainPanel=new JPanel(new BorderLayout());
 		mainPanel.add(jpForDate,BorderLayout.CENTER);
 		mainPanel.add(jpForButton,BorderLayout.SOUTH);
 		mainPanel.add(title,BorderLayout.NORTH);
 		setContentPane(mainPanel);
-		setLocationRelativeTo(null);
+		setLocationRelativeTo(this.frame);
 		setVisible(true);
 	}
 	@Override
@@ -86,7 +79,7 @@ public class AddDayView extends JDialog implements KeyListener,ActionListener {
                 month = Integer.parseInt(textMonth.getText());
                 day = Integer.parseInt(textDay.getText());
                 if(checkValid()){
-                	DayView dayView = new DayView(frame, dayList);//
+                	DayView dayView = new DayView(frame, data);//
             		dayView.dayView(year, month, day);
                     dispose();
                 }else{

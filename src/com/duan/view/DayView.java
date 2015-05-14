@@ -19,27 +19,27 @@ import javax.swing.JScrollPane;
 import com.duan.model.*;
 
 public class DayView extends JDialog implements ActionListener {
-	private static final int WIDTH = 400;
-	private static final int HEIGHT = 500;
+	private static final int WIDTH = 300;
+	private static final int HEIGHT = 400;
+	private MyData data;
 	private MyDayList dayList;
 	private MyDay theDay;
 	private CalendarView frame;
-
 	private JPanel mainPanel, jpForTime, jpForButton, jpForList;
 	private JScrollPane jspForCourse, jspForTaskAndRoutine;
 	private JList<String> listCourse, listTaskAndRoutine;
 	private JButton backButton, addButton, rmButton;
 	private JLabel labelForTime;
-	public DayView( MyDayList dayList) {
-		this(null,dayList);
+	public DayView(MyData data) {
+		this(null,data);
 	}
-	public DayView(CalendarView frame, MyDayList dayList) {
+	public DayView(CalendarView frame,MyData data) {
 		setModal(true);
 		setTitle("»’ ”Õº");
-		this.dayList = dayList;
+		this.data=data;
+		this.dayList = data.getDayList();
 		this.frame = frame;
 	}
-
 	public void dayView(int year, int month, int day) {
 		setSize(WIDTH, HEIGHT);
 		getDay(year, month, day);
@@ -49,7 +49,6 @@ public class DayView extends JDialog implements ActionListener {
 		labelForTime.setHorizontalAlignment(JLabel.CENTER);
 		labelForTime.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 		jpForTime.add(labelForTime);
-
 		jpForList = new JPanel();
 		jpForList.setLayout(new GridLayout(2, 1));
 		listCourse = new JList<String>(new CourseDataModel());//
@@ -60,7 +59,6 @@ public class DayView extends JDialog implements ActionListener {
 		jspForTaskAndRoutine = new JScrollPane(listTaskAndRoutine);
 		jpForList.add(jspForCourse);
 		jpForList.add(jspForTaskAndRoutine);
-
 		jpForButton = new JPanel(new GridLayout(1, 3, 3, 3));
 		backButton = new JButton("∑µªÿ");
 		backButton.addActionListener(this);
@@ -71,7 +69,6 @@ public class DayView extends JDialog implements ActionListener {
 		jpForButton.add(backButton);
 		jpForButton.add(addButton);
 		jpForButton.add(rmButton);
-
 		mainPanel = new JPanel(new BorderLayout());
 		mainPanel.add(jpForButton, BorderLayout.SOUTH);
 		mainPanel.add(jpForList, BorderLayout.CENTER);
@@ -81,16 +78,15 @@ public class DayView extends JDialog implements ActionListener {
 		setPreferredSize(getPreferredSize());
 		setVisible(true);
 	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == backButton) {
 			if(frame!=null)
-				frame.calendarViewRepaint();
+				frame.updateView();//
 			dispose();
 		} else if (source == addButton) {
-			AddActivityInDayView addView=new AddActivityInDayView(this,dayList);
+			AddActivityInDayView addView=new AddActivityInDayView(this,data);
 			addView.addView();
 		} else if (source == rmButton) {
 			int index=listCourse.getSelectedIndex();
@@ -107,9 +103,13 @@ public class DayView extends JDialog implements ActionListener {
 				if(op==JOptionPane.YES_OPTION){
 					int mid = theDay.getTaskList().size();
 					if (index < mid){
-						theDay.getTaskList().remove(index);
+						MyTask task=theDay.getTaskList().get(index);
+						data.removeTask(theDay, task);
+						//theDay.removeTask(task);
 					}else{
-						theDay.getRoutineList().remove(index - mid);
+						MyRoutine routine=theDay.getRoutineList().get(index-mid);
+						data.removeRoutine(theDay, routine);
+						//theDay.removeRoutine(routine);
 					}
 					dayView(theDay.getDate().get(Calendar.YEAR),
 							theDay.getDate().get(Calendar.MONTH)+1,
@@ -118,17 +118,16 @@ public class DayView extends JDialog implements ActionListener {
 			}
 		}
 	}
-
 	private MyDay getDay(int year, int month, int day) {
 		theDay = dayList.getDay(year, month, day);
 		if (theDay == null) {
 			theDay = new MyDay();
 			theDay.getDate().set(year, month-1, day);
 			dayList.getDayList().add(theDay);
+			theDay.addCourse(data.getTable());
 		}
 		return theDay;
 	}
-
 	class CourseDataModel extends AbstractListModel<String> {
 		@Override
 		public String getElementAt(int index) {

@@ -78,10 +78,8 @@ public class AddClockView extends JDialog implements KeyListener, ActionListener
         jpForTime.setRightComponent(rightJp);
         jpForTime.setDividerSize(3);
         jpForTime.setDividerLocation(WIDTH/2);
-        
         textHour.addKeyListener(this);
         textMin.addKeyListener(this);
-        
         btnOk = new JButton("确定");
         btnCancel = new JButton("取消");
         btnBack = new JButton("返回");
@@ -92,7 +90,6 @@ public class AddClockView extends JDialog implements KeyListener, ActionListener
         btnBack.addActionListener(this);
         btnOk.addActionListener(this);
         btnCancel.addActionListener(this);
-        
         setTypePanel=new JPanel(new GridLayout(4, 1));
         label=new JLabel("重复");
         label.setFont(font);
@@ -147,7 +144,7 @@ public class AddClockView extends JDialog implements KeyListener, ActionListener
             clock.setType(type);
             clock.updateType();
             this.list.getClockList().add(clock);//
-            this.frame.clockViewRepaint();
+            this.frame.loadView();
             this.dispose();
         } else if(source == btnCancel) { // 点击取消按钮时取消计时
         	this.dispose();
@@ -155,7 +152,6 @@ public class AddClockView extends JDialog implements KeyListener, ActionListener
         	this.dispose();
         }
 	}
-
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 	}
