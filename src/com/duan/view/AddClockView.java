@@ -35,11 +35,11 @@ public class AddClockView extends JDialog implements KeyListener, ActionListener
     private JPanel  mainPanel,setTypePanel,jrButtonPanel, buttonPanel;
     private JButton btnOk, btnCancel, btnBack;
 
-    private JRadioButton[] jr={new JRadioButton("周一"),
+    private JRadioButton[] jr={new JRadioButton("单次",true),
+    		new JRadioButton("周日"),new JRadioButton("周一"),
     		new JRadioButton("周二"),new JRadioButton("周三"),
     		new JRadioButton("周四"),new JRadioButton("周五"),
-    		new JRadioButton("周六"),new JRadioButton("周日"),
-    		new JRadioButton("单次",true)
+    		new JRadioButton("周六"),
     };
     private Font font=new Font(Font.SERIF, Font.PLAIN, 18);
     private Calendar cal = Calendar.getInstance();
@@ -169,7 +169,7 @@ public class AddClockView extends JDialog implements KeyListener, ActionListener
 	private int getTypeForClock(){
 		int type=0;
 		int cnt=1;
-		for(int i=0;i<jr.length-1;i++){
+		for(int i=1;i<jr.length;i++){
 			if(jr[i].isSelected())
 				type+=cnt;
 			cnt*=2;

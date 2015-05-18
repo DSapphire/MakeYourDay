@@ -57,6 +57,11 @@ public class MyActivity implements Serializable{
 	public void setSetAlarmed(boolean setAlarmed) {
 		this.setAlarmed = setAlarmed;
 	}
+	public MyTime getRemindTime(int min){
+		MyTime time=new MyTime(startTime.getHour(),startTime.getMinute());
+		time.setAdvance(min);
+		return time;
+	}
 	public MyTime getStartTime() {
 		return startTime;
 	}

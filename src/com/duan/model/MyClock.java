@@ -10,6 +10,7 @@ public class MyClock implements Serializable{
 	private Calendar date;
 	private MyTime time;
 	private int type;//1 2 4 8 16 32 64
+	private boolean[] bType;
 	private String sType;
 	private int timesOfRing;
 	private int intervalMinute;
@@ -57,26 +58,39 @@ public class MyClock implements Serializable{
 		this.intervalMinute = intervalMinute;
 	}
 	public void updateType(){
-		if(type==127){
+		if(bType==null)
+			bType=new boolean[7];
+		int i=getType();
+		int j=0;
+		while(i>0&&j<7){
+			if(i%2==1)
+				bType[j]=true;
+			else
+				bType[j]=false;
+			i/=2;
+			j++;
+		}
+		if(this.getType()==127){
 			sType="每天";
-		}else if(type==0){
+		}else if(this.getType()==0){
 			sType="单次";
 		}else{
 			StringBuffer sb=new StringBuffer();
 			String s[]={
-					"周一 ","周二 ","周三 ","周四 ","周五 ","周六 ","周日 "};
-			int i=type;
-			int j=0;
-			while(i>0){
-				if(i%2==1){
-					sb.append(s[j]);
+					"周日 ","周一 ","周二 ","周三 ","周四 ","周五 ","周六 "};
+			for(int k=0;k<bType.length;k++){
+				if(bType[k]){
+					sb.append(s[k]);
 				}
-				j++;
-				i/=2;
 			}
 			sType=sb.toString();
 		}
 	}
+	public boolean isTodayIncluded(int dayOfWeek){
+		updateType();
+		return bType[dayOfWeek-1];
+	}
+	@Override
 	public String toString(){
 		updateType();
 		return this.memo+"  "+time.toString()+"  "+sType;

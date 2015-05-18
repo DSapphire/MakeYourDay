@@ -3,11 +3,13 @@ package com.duan.view;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.Image;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -17,6 +19,7 @@ import java.util.TimerTask;
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -29,7 +32,7 @@ import com.duan.model.*;
 
 public class MainView extends JFrame implements ActionListener {
 
-	private static final int WIDTH = 300;
+	private static final int WIDTH = 328;
 	private static final int HEIGHT = 400;
 	private MyData data;//
 	private MyDay theDay;
@@ -56,9 +59,12 @@ public class MainView extends JFrame implements ActionListener {
 		labelForTime.setHorizontalAlignment(JLabel.CENTER);
 		jpForTime.add(labelForTime);
 		jpForTime.setPreferredSize(new Dimension(WIDTH, HEIGHT / 8));
-		jpForList = new JPanel();
-		jpForList.setLayout(new BoxLayout(jpForList, BoxLayout.X_AXIS));
+		//jpForList = new JPanel();
+		//jpForList.setLayout(new BoxLayout(jpForList, BoxLayout.X_AXIS));
 		//updateView();
+		Image image=new ImageIcon("res/1.gif").getImage();
+		ImageViewer iV=new ImageViewer(image);
+		iV.setPreferredSize(new Dimension(328,185));
 		jpForButton = new JPanel(new GridLayout(2, 3, 10, 5));
 		calVButton = new JButton("»’¿˙ ”Õº");
 		calVButton.addActionListener(this);
@@ -78,10 +84,11 @@ public class MainView extends JFrame implements ActionListener {
 		jpForButton.add(actVButton);
 		jpForButton.add(taskVButton);
 		jpForButton.add(routineVButton);
-		jpForButton.setPreferredSize(new Dimension(WIDTH, HEIGHT / 8));
+		jpForButton.setPreferredSize(new Dimension(WIDTH, HEIGHT / 4));
 		mainPanel = new JPanel(new BorderLayout(4, 4));
 		mainPanel.add(jpForTime, BorderLayout.NORTH);
-		mainPanel.add(jpForList, BorderLayout.CENTER);
+		//mainPanel.add(jpForList, BorderLayout.CENTER);
+		mainPanel.add(iV, BorderLayout.CENTER);
 		mainPanel.add(jpForButton, BorderLayout.SOUTH);
 		setContentPane(mainPanel);
 		setLocationRelativeTo(null);
@@ -227,6 +234,30 @@ public class MainView extends JFrame implements ActionListener {
 				return theDay.getRoutineList().size();
 			else
 				return 0;
+		}
+	}
+}
+class ImageViewer extends JPanel{
+	private Image image;
+	private int xCoordinate;
+	private int yCoordinate;
+	public ImageViewer(){
+	}
+	public ImageViewer(Image image){
+		this.image=image;
+	}
+	public void setXCoordinate(int xCoordinate){
+		this.xCoordinate=xCoordinate;
+		repaint();
+	}
+	public void setYCoordinate(int yCoordinate){
+		this.yCoordinate=yCoordinate;
+		repaint();
+	}
+	protected void paintComponent(Graphics g){
+		super.paintComponent(g);
+		if(image!=null){
+			g.drawImage(image,xCoordinate,yCoordinate,getSize().width,getSize().height,this);
 		}
 	}
 }

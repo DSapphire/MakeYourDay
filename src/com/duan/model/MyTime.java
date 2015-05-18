@@ -51,7 +51,15 @@ public class MyTime implements Serializable,Comparable<MyTime>{
 	public void setDay(int day) {
 		this.day = day;
 	}
-	
+	public void setAdvance(int min){
+		if(minute>min){
+			minute-=min;
+		}else{
+			int h=(min-minute)/60+1;
+			minute=minute+h*60-min;
+			hour-=h;
+		}
+	}
 	public static MyTime getCourseStartTime(int tableId){
 		MyTime time=new MyTime();
 		if(tableId<7){
