@@ -32,7 +32,6 @@ public class MyCourseTable implements Serializable {
 	public boolean removeCourse(int dayOfWeek,int tableId) {
 		for(MyCourse course:this.courseTable.get(dayOfWeek - 1)){
 			if(course.getTableId()==tableId){
-				
 				return this.courseTable.get(dayOfWeek - 1).remove(course);
 			}
 		}
@@ -41,7 +40,7 @@ public class MyCourseTable implements Serializable {
 	public boolean removeCourse(String name) {
 		for(int i=0;i<7;i++){
 			for(MyCourse course:this.courseTable.get(i)){
-				if(course.getCname()==name){
+				if(course.getName()==name){
 					return this.courseTable.get(i).remove(course);
 				}
 			}

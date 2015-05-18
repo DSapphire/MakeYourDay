@@ -5,16 +5,16 @@ import java.util.Calendar;
 
 public class MyActivity implements Serializable{
 
-	private String name;
-	private int type;
-	private String place;
+	protected String name;
+	protected int type;
+	protected String place;
 	
-	private MyPriority priority;
-	private MyTime startTime;
-	private MyTime endTime;
+	protected MyPriority priority;
+	protected MyTime startTime;
+	protected MyTime endTime;
 	
-	boolean isFinished;
-	boolean setAlarmed;
+	protected boolean isFinished;
+	
 	public MyActivity(){
 		
 	}
@@ -50,12 +50,6 @@ public class MyActivity implements Serializable{
 	}
 	public void setFinished(boolean isFinished) {
 		this.isFinished = isFinished;
-	}
-	public boolean isSetAlarmed() {
-		return setAlarmed;
-	}
-	public void setSetAlarmed(boolean setAlarmed) {
-		this.setAlarmed = setAlarmed;
 	}
 	public MyTime getRemindTime(int min){
 		MyTime time=new MyTime(startTime.getHour(),startTime.getMinute());

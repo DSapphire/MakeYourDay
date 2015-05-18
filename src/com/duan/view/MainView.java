@@ -29,12 +29,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import com.duan.model.*;
+import com.duan.util.ActivityReminder;
 
 public class MainView extends JFrame implements ActionListener {
 
 	private static final int WIDTH = 328;
-	private static final int HEIGHT = 400;
+	private static final int HEIGHT = 300;
 	private MyData data;//
+	private ActivityReminder reminder;
 	private MyDay theDay;
 	private Calendar today = Calendar.getInstance();
 	private Timer timer;
@@ -84,7 +86,7 @@ public class MainView extends JFrame implements ActionListener {
 		jpForButton.add(actVButton);
 		jpForButton.add(taskVButton);
 		jpForButton.add(routineVButton);
-		jpForButton.setPreferredSize(new Dimension(WIDTH, HEIGHT / 4));
+		jpForButton.setPreferredSize(new Dimension(WIDTH, HEIGHT /6));
 		mainPanel = new JPanel(new BorderLayout(4, 4));
 		mainPanel.add(jpForTime, BorderLayout.NORTH);
 		//mainPanel.add(jpForList, BorderLayout.CENTER);
@@ -114,7 +116,10 @@ public class MainView extends JFrame implements ActionListener {
 	}
 	private void loadData() {
 		data = new MyData();
+		reminder=new ActivityReminder();
+		data.addObserver(reminder);
 		data.readData();
+		reminder.updataData(data);
 		int year=today.get(Calendar.YEAR),
 				month=today.get(Calendar.MONTH) + 1,
 				day=today.get(Calendar.DAY_OF_MONTH);

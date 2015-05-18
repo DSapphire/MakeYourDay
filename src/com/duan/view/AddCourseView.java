@@ -142,7 +142,7 @@ public class AddCourseView extends JDialog implements ActionListener{
 	}
 	private MyCourse getCourseFromView(){
 		MyCourse course=new MyCourse();
-		course.setCname(textForName.getText());
+		course.setName(textForName.getText());
 		course.setTeacher(textForPlace.getText());
 		course.setPlace(textForPlace.getText());
 		for(int i=0;i<jrForType.length;i++){

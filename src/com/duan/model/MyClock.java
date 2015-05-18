@@ -7,14 +7,11 @@ public class MyClock implements Serializable{
 
 	//type
 	private String memo;
-	private Calendar date;
 	private MyTime time;
 	private int type;//1 2 4 8 16 32 64
 	private boolean[] bType;
 	private String sType;
-	private int timesOfRing;
-	private int intervalMinute;
-	private boolean ring;
+	private boolean ring=true;
 	public boolean isRing() {
 		return ring;
 	}
@@ -27,12 +24,6 @@ public class MyClock implements Serializable{
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
-	public Calendar getDate() {
-		return date;
-	}
-	public void setDate(Calendar date) {
-		this.date = date;
-	}
 	public MyTime getTime() {
 		return time;
 	}
@@ -44,18 +35,6 @@ public class MyClock implements Serializable{
 	}
 	public void setType(int type) {
 		this.type = type;
-	}
-	public int getTimesOfRing() {
-		return timesOfRing;
-	}
-	public void setTimesOfRing(int timesOfRing) {
-		this.timesOfRing = timesOfRing;
-	}
-	public int getIntervalMinute() {
-		return intervalMinute;
-	}
-	public void setIntervalMinute(int intervalMinute) {
-		this.intervalMinute = intervalMinute;
 	}
 	public void updateType(){
 		if(bType==null)

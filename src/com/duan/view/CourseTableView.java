@@ -8,21 +8,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+
 import com.duan.model.*;
 
-public class CourseTableView extends JFrame implements ActionListener {
+public class CourseTableView extends JDialog implements ActionListener {
 	private static final int WIDTH = 1000;
 	private static final int HEIGHT = 500;
 	private MyCourseTable table;
 	private int max = 6;
-	private MainView mainView;
-	
 	private JPanel jpForCourse, mainPanel, jpForTitle, jpForButton, jpForTable,
 			jpForId;
 	private JLabel title;
@@ -30,11 +31,10 @@ public class CourseTableView extends JFrame implements ActionListener {
 	private JButton addButton, rmButton;
 	private JLabel[] buttonForDayOfWeek, buttonForId;
 	
-	
 	public CourseTableView(MainView mainView,MyCourseTable table) {
-		super("课程表");
+		setTitle("课程表");
+		setModal(true);
 		this.table = table;
-		this.mainView=mainView;
 	}
 	public void courseTableRepaint() {
 		setSize(WIDTH, HEIGHT);
@@ -81,7 +81,6 @@ public class CourseTableView extends JFrame implements ActionListener {
 		mainPanel.add(jpForTitle, BorderLayout.NORTH);
 		setContentPane(mainPanel);
 		setVisible(true);
-		this.addWindowListener(new ViewClosing());
 	}
 	public void updateView(){
 		jpForCourse.removeAll();
@@ -120,12 +119,6 @@ public class CourseTableView extends JFrame implements ActionListener {
 		} else if (source == rmButton) {
 			RemoveCourseView rmView=new RemoveCourseView(this, table,max);
 			rmView.removeCourseView();
-		}
-	}
-	class ViewClosing extends WindowAdapter {
-		@Override
-		public void windowClosing(WindowEvent e) {
-			//mainView.updateView();
 		}
 	}
 }

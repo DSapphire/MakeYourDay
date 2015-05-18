@@ -6,9 +6,7 @@ import javax.swing.JOptionPane;
 
 public class MyCourse extends MyActivity implements Serializable{
 	
-	private String cname;
 	private String teacher;
-
 	private String ctype;
 	private String weekType;
 	
@@ -19,19 +17,13 @@ public class MyCourse extends MyActivity implements Serializable{
 		
 	}
 	public MyCourse(String name){
-		this.cname=name;
+		this.name=name;
 	}
 	public MyCourse(String name,int tableId,int dayOfWeek){
-		this.cname=name;
+		this.name=name;
 		this.tableId=tableId;
 		this.dayOfWeek=dayOfWeek;
 		this.key=this.dayOfWeek*100+this.tableId;
-	}
-	public String getCname() {
-		return cname;
-	}
-	public void setCname(String cname) {
-		this.cname = cname;
 	}
 	public int getDayOfWeek() {
 		return dayOfWeek;
@@ -150,12 +142,12 @@ public class MyCourse extends MyActivity implements Serializable{
 		setEndTime(MyTime.getCourseEndTime(tableId));
 	}
 	public String toPlainText(){
-		return cname + "(" + teacher + ","
+		return name + "(" + teacher + ","
 				+ ctype +","+weekType+ ","+this.getPlace()+")";
 	}
 	@Override
 	public String toString() {
-		return "\n" + cname + "\n任课教师=" + teacher + "\n课程类型："
+		return "\n" + name + "\n任课教师=" + teacher + "\n课程类型："
 				+ ctype + "\n上课节次：" +weekType+getStringDayOfWeek()+"第" +tableId+
 				"节"+"\n上课时间"+this.getStartTime()+" - "+this.getEndTime()+
 				"\n上课地点："+this.getPlace();

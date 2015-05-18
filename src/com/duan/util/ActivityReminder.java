@@ -2,6 +2,8 @@ package com.duan.util;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -9,7 +11,8 @@ import com.duan.model.*;
 import com.duan.view.ClockRingView;
 import com.duan.view.ReminderView;
 
-public class ActivityReminder{
+public class ActivityReminder implements Observer{
+	
 	private ArrayList<MyTask> tList;
 	private ArrayList<MyRoutine> rList;
 	private ArrayList<MyCourse> cList;
@@ -19,9 +22,11 @@ public class ActivityReminder{
 	private Calendar today=Calendar.getInstance();
 	private int year,month,day;
 	private int setAdvance=10;
+	private RingClock ring;
 	public ActivityReminder() {
 		timer=new Timer();
 		task=new MyTimeTask();
+		ring=new RingClock();
 	}
 	public void updataData(MyData data){
 		year=today.get(Calendar.YEAR);
@@ -60,6 +65,11 @@ public class ActivityReminder{
 						MyTime time=myclock.getTime();
 						if(checkTime(time)){
 							return myclock;
+						}
+					}else{
+						if(myclock.getType()==0&&myclock.isRing()){
+							myclock.setRing(false);
+							return myclock;//µ•¥Œµƒƒ÷÷”
 						}
 					}
 				}
@@ -112,25 +122,38 @@ public class ActivityReminder{
 		@Override
 		public void run() {
 			if(this.running){
+				
 				MyClock clock=checkClock();
 				if(clock!=null){
-					ClockRingView crv=new ClockRingView(clock);
+					ring.startRing();
+					ClockRingView crv=new ClockRingView(clock,ring);//
 					crv.view();
 				}
 				MyTask task=checkTask();
 				MyRoutine routine=checkRoutine();
 				MyCourse course=checkCourse();
 				ReminderView rv=null;
-				if(course!=null)
-					rv=new ReminderView(course);
-				else if(task!=null)
-					rv=new ReminderView(task);
-				else if(routine!=null)
-					rv=new ReminderView(routine);
-				if(rv!=null)
+				if(course!=null){
+					rv=new ReminderView(course,ring);
+				}else if(task!=null){
+					rv=new ReminderView(task,ring);
+				}else if(routine!=null){
+					rv=new ReminderView(routine,ring);
+				}
+				if(rv!=null){
+					ring.startRing();
 					rv.view();
+				}
+					
 			}
 		}
 		
+	}
+	@Override
+	public void update(Observable o, Object arg) {
+		if(o instanceof MyData){
+			MyData data=(MyData)o;
+			updataData(data);
+		}
 	}
 }

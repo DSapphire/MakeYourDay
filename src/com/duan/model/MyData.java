@@ -1,14 +1,18 @@
 package com.duan.model;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Observable;
+
+import com.duan.util.ActivityReminder;
 import com.duan.util.SaveAndRead;
-public class MyData {
+public class MyData extends Observable{
 	//需要载入的数据
 	private MyClockList clockList;
 	private MyDayList dayList;
 	private MyCourseTable table;
 	private MyTaskList taskList;
 	private MyRoutineList routineList;
+	
 	public MyClockList getClockList() {
 		return clockList;
 	}

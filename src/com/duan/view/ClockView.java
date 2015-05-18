@@ -32,6 +32,7 @@ public class ClockView extends JDialog implements ActionListener {
 	private DateFormat df = new SimpleDateFormat("HH : mm : ss  Y/M/d  E");
 	private MyClockList list;
 	public ClockView(MyClockList list) {
+		setModal(true);
 		setTitle("ƒ÷÷”");
 		this.list = list;
 	}
