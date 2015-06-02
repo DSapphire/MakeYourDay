@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Calendar;
+
 import com.duan.model.*;
 
 public class SaveAndRead {
@@ -145,7 +147,7 @@ public class SaveAndRead {
 						new FileInputStream(file));
 				taskList=(MyTaskList)ois.readObject();
 				ois.close();
-			return taskList;
+				return taskList;
 			}catch (IOException e) {
 			}catch (ClassNotFoundException e1) {
 			}
@@ -188,6 +190,44 @@ public class SaveAndRead {
 				routineList = (MyRoutineList)ois.readObject();
 				ois.close();
 				return routineList;
+			}catch (IOException e) {
+			}catch (ClassNotFoundException e1) {
+			}
+		}
+		return null;
+	}
+	public static boolean writeLog(Calendar today){
+		final String file="res/log";
+		File tfile=new File(file);
+		if(!tfile.exists()){
+			try {
+				tfile.createNewFile();
+			} catch (IOException e) {
+			}
+		}
+		ObjectOutputStream oos;
+		try {
+			oos = new ObjectOutputStream(
+					new FileOutputStream(file));
+			oos.writeObject(today);
+			oos.flush();
+			oos.close();
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+	public static Calendar readLog(){
+		final String file="res/log";
+		ObjectInputStream ois;
+		Calendar date=null;
+		if(checkFile(file)){
+			try{
+				ois = new ObjectInputStream(
+						new FileInputStream(file));
+				date = (Calendar)ois.readObject();
+				ois.close();
+				return date;
 			}catch (IOException e) {
 			}catch (ClassNotFoundException e1) {
 			}

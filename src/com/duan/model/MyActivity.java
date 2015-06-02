@@ -4,15 +4,12 @@ import java.io.Serializable;
 import java.util.Calendar;
 
 public class MyActivity implements Serializable{
-
 	protected String name;
 	protected int type;
 	protected String place;
-	
 	protected MyPriority priority;
 	protected MyTime startTime;
 	protected MyTime endTime;
-	
 	protected boolean isFinished;
 	
 	public MyActivity(){

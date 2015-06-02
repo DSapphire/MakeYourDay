@@ -43,7 +43,7 @@ public class ActivityReminder implements Observer{
 		timer.cancel();
 		task=new MyTimeTask();
 		timer=new Timer();
-		timer.scheduleAtFixedRate(task, 0, 59000L);
+		timer.scheduleAtFixedRate(task, 0, 30000L);//30 seconds
 	}
 	private boolean checkTime(MyTime time){
 		today=Calendar.getInstance();

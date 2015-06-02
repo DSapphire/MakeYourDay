@@ -3,14 +3,11 @@ package com.duan.model;
 import java.io.Serializable;
 
 public class MyTime implements Serializable,Comparable<MyTime>{
-	
-	
 	private int hour;
 	private int minute;
 	private int second;
 	private int weekday;
 	private int day;
-
 	private static int[] courseStartHours={8,9,13,15,17,19};
 	private static int[] courseStartMinutes={0,50,30,20,55,20};
 	private static int[] courseEndHours={9,12,15,17,18,21};
@@ -76,12 +73,9 @@ public class MyTime implements Serializable,Comparable<MyTime>{
 		}
 		return time;
 	}
-	
 	public String toPlainText(){
-		
 		return String.format("%02d", hour)+" : "+String.format("%02d", minute)+" : "+String.format("%02d", second);
 	}
-	
 	@Override
 	public String toString() {
 		return String.format("%02d", hour)+" : "+String.format("%02d", minute);
@@ -100,7 +94,6 @@ public class MyTime implements Serializable,Comparable<MyTime>{
 		}
 		return isBefore;
 	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -116,5 +109,4 @@ public class MyTime implements Serializable,Comparable<MyTime>{
 			return false;
 		return true;
 	}
-	
 }
