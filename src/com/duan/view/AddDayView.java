@@ -16,18 +16,15 @@ import com.duan.model.*;
 public class AddDayView extends JDialog implements KeyListener,ActionListener {
 	private static final int WIDTH =300;
 	private static final int HEIGHT =140;
-	private MyData data;
-	private CalendarView frame=null;
+	private MyData data;//数据
+	private MyView frame=null;
 	private Calendar today=Calendar.getInstance();
-	private int year,month,day;
+	private int year,month,day;//年月日
 	private JPanel mainPanel,jpForDate,jpForButton;
 	private JLabel labelForDay,labelForMonth,labelForYear,title;
 	private JTextField textDay, textMonth,textYear;
 	private JButton okButton,cancelButton;
-	public AddDayView(MyData data) {
-		this(null,data);
-	}
-	public AddDayView(CalendarView frame,MyData data) {
+	public AddDayView(MyView frame,MyData data) {
 		setTitle("选择日期");
         setModal(true);
         this.frame=frame;
@@ -67,7 +64,7 @@ public class AddDayView extends JDialog implements KeyListener,ActionListener {
 		mainPanel.add(jpForButton,BorderLayout.SOUTH);
 		mainPanel.add(title,BorderLayout.NORTH);
 		setContentPane(mainPanel);
-		setLocationRelativeTo(this.frame);
+		setLocationRelativeTo(null);
 		setVisible(true);
 	}
 	@Override
@@ -79,11 +76,18 @@ public class AddDayView extends JDialog implements KeyListener,ActionListener {
                 month = Integer.parseInt(textMonth.getText());
                 day = Integer.parseInt(textDay.getText());
                 if(checkValid()){
-                	DayView dayView = new DayView(frame, data);//
-            		dayView.dayView(year, month, day);
-                    dispose();
+                	MyDay theDay=data.getDayList().getDay(year, month, day);
+                	if(theDay==null){
+                		theDay=new MyDay();
+                		theDay.getDate().set(year, month-1, day);//month-1
+                		data.getDayList().getDayList().add(theDay);
+                	}
+                	DayView dayView = new DayView(frame,theDay,data);//
+                	dispose();
+            		dayView.loadView();
+                    
                 }else{
-                	JOptionPane.showMessageDialog(null, "输入日期格式不正确");
+                	JOptionPane.showMessageDialog(null, "请输入一个合理的日期");
                 }
             } catch (NumberFormatException e1) {
             	JOptionPane.showMessageDialog(null, "输入日期格式不正确");
@@ -106,10 +110,8 @@ public class AddDayView extends JDialog implements KeyListener,ActionListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 	}
+	//简单的检查有效性
 	private boolean checkValid(){
-		if(year<today.get(Calendar.YEAR)){
-			return false;
-		}
 		today.set(Calendar.YEAR, year);
 		if(month<1||month>today.getActualMaximum(Calendar.MONTH)+1){
 			return false;

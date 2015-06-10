@@ -12,9 +12,9 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class RingClock {
-	private final int LOOP_COUNT = 5;
+	private final int LOOP_COUNT = 5;//循环播放次数
 	private Clip clip;
-	private final String file="res/alarm.wav";
+	private final String file="res/alarm.wav";//闹铃文件
 	public RingClock(){
 		try {
             AudioInputStream ais = AudioSystem.getAudioInputStream(
@@ -41,12 +41,14 @@ public class RingClock {
             e.printStackTrace();
         }
 	}
+	//开始循环播放
 	public void startRing(){
 		 if(null != clip) {
              clip.setFramePosition(0); 
              clip.loop(LOOP_COUNT);
          }
 	}
+	//停止播放
 	public void stopRing(){
 		if(null != clip && clip.isRunning()) {
             clip.stop();

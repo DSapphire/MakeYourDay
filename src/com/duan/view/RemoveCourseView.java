@@ -15,7 +15,7 @@ import com.duan.model.*;
 public class RemoveCourseView extends JDialog implements ActionListener {
 	private static final int WIDTH=300;
 	private static final int HEIGHT=150;
-	private CourseTableView frame;
+	private MyView frame;
 	private MyCourseTable table;
 	private int max=6;
 	private String[] dayOfWeek,id;
@@ -23,7 +23,7 @@ public class RemoveCourseView extends JDialog implements ActionListener {
 	private JLabel title;
 	private JButton rmButton,backButton;
 	private JComboBox<String> boxForDayOfWeek,boxForId;
-	public RemoveCourseView(CourseTableView sframe,MyCourseTable table,int max) {
+	public RemoveCourseView(MyView sframe,MyCourseTable table,int max) {
 		setTitle("删除课程");
         setModal(true);
 		this.table=table;
@@ -54,18 +54,18 @@ public class RemoveCourseView extends JDialog implements ActionListener {
 		mainPanel.add(jpForButton,BorderLayout.SOUTH);
 		mainPanel.add(title,BorderLayout.NORTH);
 		setContentPane(mainPanel);
-		setLocationRelativeTo(frame);
+		setLocationRelativeTo(null);
 		setVisible(true);
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == backButton){
-			frame.updateView();
+			frame.updateMyView();
 			dispose();
 		}else if(rmButton==source){
 			if(rmCourse()){
-				frame.updateView();
+				frame.updateMyView();
 			}else{
 				JOptionPane.showMessageDialog(null, "没有对应课程，请重新选择");
 			}

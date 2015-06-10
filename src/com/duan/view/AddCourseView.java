@@ -20,9 +20,9 @@ import com.duan.model.*;
 public class AddCourseView extends JDialog implements ActionListener{
 	private static final int WIDTH=300;
 	private static final int HEIGHT=500;
-	private CourseTableView frame;
-	private MyCourseTable table;
-	private int max=6;
+	private MyView frame;
+	private MyCourseTable table;//课程数据表
+	private int max=6;//默认一天六节课
 	private JPanel jpForButton,jpForCourse,mainPanel;
 	private JPanel jpForName,jpForPlace,jpForTeacher,jpForType,jpForBox,jpForWeekType,jpForCtype;
 	private JLabel labelForName, labelForPlace,labelForTeacher,title;
@@ -33,15 +33,14 @@ public class AddCourseView extends JDialog implements ActionListener{
 	private JButton addButton,cancelButton;
 	private Font font = new Font(Font.SERIF, Font.PLAIN, 20);
     private String[] dayOfWeek,id;
-	public AddCourseView(CourseTableView sframe,MyCourseTable table,int max) {
-		super(sframe);
+	public AddCourseView(MyView sframe,MyCourseTable table,int max) {
 		setTitle("添加课程");
         setModal(true);
         this.frame=sframe;
         this.table=table;
         this.max=max;
 	}
-	public void addCourseView(){
+	public void loadView(){
 		setSize(WIDTH, HEIGHT);
 		labelForName=new JLabel("课程名：");
         textForName=new JTextField(10);
@@ -114,7 +113,7 @@ public class AddCourseView extends JDialog implements ActionListener{
         mainPanel.add(jpForCourse,BorderLayout.CENTER);
         mainPanel.add(jpForButton,BorderLayout.SOUTH);
         setContentPane(mainPanel);
-        setLocationRelativeTo(frame);
+        setLocationRelativeTo(null);
 		setVisible(true);
 	}
 	@Override
@@ -123,7 +122,7 @@ public class AddCourseView extends JDialog implements ActionListener{
 		if(source==addButton){
 			if(checkValid()){
 				if(addCourse()){
-					this.frame.updateView();//
+					this.frame.updateMyView();//
 					dispose();
 				}else{
 					JOptionPane.showMessageDialog(null, "课程时间冲突！");
@@ -134,12 +133,14 @@ public class AddCourseView extends JDialog implements ActionListener{
 		}else if(source==cancelButton)
 			dispose();
 	}
+	//添加课程到课程表
 	private  boolean addCourse(){
 		MyCourse course=getCourseFromView();
 		if(table.addCourse(course))
 			return true;
 		return false;
 	}
+	//获取填写的课程
 	private MyCourse getCourseFromView(){
 		MyCourse course=new MyCourse();
 		course.setName(textForName.getText());
@@ -158,6 +159,7 @@ public class AddCourseView extends JDialog implements ActionListener{
 		course.updateTime();
 		return course;
 	}
+	//检查是否有效
 	private boolean checkValid(){
 		if(textForName.getText().equals(""))
 			return false;
@@ -167,6 +169,7 @@ public class AddCourseView extends JDialog implements ActionListener{
 			return false;
 		return true;
 	}
+	//更新时间
 	private void updateTime(){
 		MyCourse course=new MyCourse();
         dayOfWeek=new String[7];

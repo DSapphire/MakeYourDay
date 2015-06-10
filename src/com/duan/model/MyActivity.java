@@ -5,13 +5,12 @@ import java.util.Calendar;
 
 public class MyActivity implements Serializable{
 	protected String name;
-	protected int type;
+	protected int type;//类型
 	protected String place;
-	protected MyPriority priority;
-	protected MyTime startTime;
-	protected MyTime endTime;
-	protected boolean isFinished;
-	
+	protected MyPriority priority;//优先级
+	protected MyTime startTime;//开始时间
+	protected MyTime endTime;//结束时间
+	protected boolean isFinished;//完成
 	public MyActivity(){
 		
 	}
@@ -48,6 +47,7 @@ public class MyActivity implements Serializable{
 	public void setFinished(boolean isFinished) {
 		this.isFinished = isFinished;
 	}
+	//设置提醒时间，参数是比开始时间提前的分钟数
 	public MyTime getRemindTime(int min){
 		MyTime time=new MyTime(startTime.getHour(),startTime.getMinute());
 		time.setAdvance(min);

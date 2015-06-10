@@ -6,8 +6,8 @@ public class MyTime implements Serializable,Comparable<MyTime>{
 	private int hour;
 	private int minute;
 	private int second;
-	private int weekday;
-	private int day;
+	private int weekday;//周几
+	//跟课程相关的时间的默认值
 	private static int[] courseStartHours={8,9,13,15,17,19};
 	private static int[] courseStartMinutes={0,50,30,20,55,20};
 	private static int[] courseEndHours={9,12,15,17,18,21};
@@ -42,12 +42,6 @@ public class MyTime implements Serializable,Comparable<MyTime>{
 	public void setSecond(int second) {
 		this.second = second;
 	}
-	public int getDay() {
-		return day;
-	}
-	public void setDay(int day) {
-		this.day = day;
-	}
 	public void setAdvance(int min){
 		if(minute>min){
 			minute-=min;
@@ -57,6 +51,7 @@ public class MyTime implements Serializable,Comparable<MyTime>{
 			hour-=h;
 		}
 	}
+	//得到默认的课程开始时间
 	public static MyTime getCourseStartTime(int tableId){
 		MyTime time=new MyTime();
 		if(tableId<7){
@@ -65,6 +60,7 @@ public class MyTime implements Serializable,Comparable<MyTime>{
 		}
 		return time;
 	}
+	//得到默认的课程结束时间
 	public static MyTime getCourseEndTime(int tableId){
 		MyTime time=new MyTime();
 		if(tableId<7){
@@ -87,6 +83,7 @@ public class MyTime implements Serializable,Comparable<MyTime>{
 		return new Integer(t1).compareTo(new Integer(t2));
 		
 	}
+	//是否更早与t
 	public boolean before(MyTime t){
 		boolean isBefore=true;
 		if(this.compareTo(t)>0){

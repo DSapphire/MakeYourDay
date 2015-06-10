@@ -6,9 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class MyTask extends MyActivity implements Serializable{
-	
-	private Calendar deadLine;
-	private DateFormat df = new SimpleDateFormat("Y-M-d E");
+	private Calendar deadLine;//截止日期
+	private DateFormat df = new SimpleDateFormat("Y-M-d E");//显示截止时间的格式
 	public Calendar getDeadLine() {
 		return deadLine;
 	}

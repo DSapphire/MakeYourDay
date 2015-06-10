@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.AbstractListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -14,10 +15,10 @@ import javax.swing.JScrollPane;
 
 import com.duan.model.*;
 
-public class RoutineView extends JDialog implements ActionListener{
+public class RoutineView extends JDialog implements ActionListener,MyView{
 	private static final int WIDTH = 330;
 	private static final int HEIGHT = 400;
-	private MyData data;
+	private MyData data;//数据
 	private MyRoutineList list;
 	private JScrollPane jspList;
 	private JPanel  jpForButton, mainPanel;
@@ -29,7 +30,7 @@ public class RoutineView extends JDialog implements ActionListener{
 		this.data=data;
 		this.list=data.getRoutineList();
 	}
-	public void routineView(){
+	public void loadView(){
 		setSize(WIDTH, HEIGHT);
 		setLocationRelativeTo(null);
 		routineJList=new JList<String>(new RoutineDataModel());
@@ -55,7 +56,8 @@ public class RoutineView extends JDialog implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		Object source=e.getSource();
 		if(source==addButton){
-			AddDayView addView=new AddDayView(data);//
+			MyDay theDay=new MyDay();
+			AddActivityInDayView addView=new AddActivityInDayView(this,theDay,data);
 			addView.loadView();
 		}else if(source==rmButton){
 			int index=routineJList.getSelectedIndex();
@@ -63,11 +65,12 @@ public class RoutineView extends JDialog implements ActionListener{
 				MyRoutine routine=list.getRoutineList().get(index);//update
 				data.removeRoutine(routine);
 			}
-			routineView();
+			updateMyView();
 		}else if(source==backButton){
 			this.dispose();
 		}
 	}
+	//用于显示日常
 	class RoutineDataModel extends AbstractListModel<String> {
 		@Override
 		public String getElementAt(int index) {
@@ -83,5 +86,9 @@ public class RoutineView extends JDialog implements ActionListener{
 			else
 				return 0;
 		}
+	}
+	@Override
+	public void updateMyView() {
+		loadView();
 	}
 }

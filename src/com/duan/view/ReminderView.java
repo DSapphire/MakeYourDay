@@ -47,7 +47,6 @@ public class ReminderView extends JFrame implements ActionListener {
 		jp.add(label2,BorderLayout.CENTER);
 		jp.add(okButton,BorderLayout.SOUTH);
 		setContentPane(jp);
-		setLocationRelativeTo(null);
 		setVisible(true);
 	}
 	@Override

@@ -10,7 +10,7 @@ import java.io.ObjectOutputStream;
 import java.util.Calendar;
 
 import com.duan.model.*;
-
+//处理各种I/O
 public class SaveAndRead {
 	private static boolean checkFile(String file) {
 		File tfile = new File(file);

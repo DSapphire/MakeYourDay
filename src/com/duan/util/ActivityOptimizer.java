@@ -10,7 +10,8 @@ import com.duan.model.MyTaskList;
 public class ActivityOptimizer {
 	Calendar today=Calendar.getInstance();
 	private int days=0;
-	private int max=5;
+	private int max=5;//优先级增加最大值
+	//读取写入登录日志
 	public boolean log(){
 		Calendar date=SaveAndRead.readLog();
 		SaveAndRead.writeLog(today);
@@ -20,6 +21,7 @@ public class ActivityOptimizer {
 		}
 		return false;
 	}
+	//最简单的优化,过了一天后任务紧急重要程度都增加，这部分有待优化
 	public void optimize(MyTaskList tlist){
 		ArrayList<MyTask> list=tlist.getTaskList();
 		if(days!=0&&list!=null&&list.size()>0){

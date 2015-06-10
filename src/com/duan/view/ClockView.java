@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import com.duan.model.*;
-public class ClockView extends JDialog implements ActionListener {
+public class ClockView extends JDialog implements ActionListener,MyView {
 	private static final int WIDTH = 300;
 	private static final int HEIGHT = 400;
 	private JScrollPane jspForClockList;
@@ -30,7 +30,7 @@ public class ClockView extends JDialog implements ActionListener {
 	private JButton addClockButton, rmClockButton;
 	private Timer timer;
 	private DateFormat df = new SimpleDateFormat("HH : mm : ss  Y/M/d  E");
-	private MyClockList list;
+	private MyClockList list;//闹钟列表
 	public ClockView(MyClockList list) {
 		setModal(true);
 		setTitle("闹钟");
@@ -87,11 +87,12 @@ public class ClockView extends JDialog implements ActionListener {
 						JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 				if(op==JOptionPane.YES_OPTION){
 					list.getClockList().remove(index);//
-					this.loadView();//
+					this.updateMyView();//
 				}
 			}
 		}
 	}
+	//更新时间
 	private void initTimer() {
 		timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
@@ -102,6 +103,7 @@ public class ClockView extends JDialog implements ActionListener {
 			}
 		}, 0, 1000L);
 	}
+	//用于列表显示闹钟列表
 	class ClockDataModel extends AbstractListModel<String> {
 		@Override
 		public String getElementAt(int index) {
@@ -112,5 +114,9 @@ public class ClockView extends JDialog implements ActionListener {
 		public int getSize() {
 			return list.getClockList().size();
 		}
+	}
+	@Override
+	public void updateMyView() {
+		loadView();
 	}
 }

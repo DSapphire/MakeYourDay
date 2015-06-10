@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -14,15 +15,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+
 import com.duan.model.*;
 
 public class AddActivityInDayView extends JDialog implements ActionListener {
 	private static final int WIDTH = 320;
 	private static final int HEIGHT = 500;
-	private MyData data;
+	private MyData data;//数据
 	private MyDayList dayList;
-	private MyDay theDay;
-	private DayView frame;
+	private MyDay theDay=null;
+	private MyView frame=null;
 	private int year,month,day;
 	private JPanel mainPanel,jpForDate,jpForButton,jpForRButton,
 					jpForPriority,jpForDDL,jpForAdd,jpForTimeS,jpForTimeE;
@@ -37,26 +39,23 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
     		new JRadioButton("周四"),new JRadioButton("周五"),
     		new JRadioButton("周六"),
     };
-	public AddActivityInDayView(MyData data) {
-		this(null,data);
-	}
-	public AddActivityInDayView(DayView frame, MyData data) {
+	public AddActivityInDayView(MyView frame, MyDay theDay,MyData data) {
 		setModal(true);
 		setTitle("添加事项");
 		this.data=data;
 		this.dayList = data.getDayList();
 		this.frame = frame;
+		this.theDay=theDay;
 	}
-	public void addView(){
+	public void loadView(){
 		setSize(WIDTH, HEIGHT);
-		theDay=frame.getTheDay();
 		jpForDate=new JPanel();
 		jpForDate.setBorder(BorderFactory.createTitledBorder("日期设置"));
 		textDay=new JTextField(4);
-		textDay.setText(""+theDay.getDate().get(Calendar.DAY_OF_MONTH));
 		textMonth=new JTextField(2);
-		textMonth.setText(""+(theDay.getDate().get(Calendar.MONTH)+1));
 		textYear=new JTextField(4);
+		textDay.setText(""+theDay.getDate().get(Calendar.DAY_OF_MONTH));
+		textMonth.setText(""+(theDay.getDate().get(Calendar.MONTH)+1));
 		textYear.setText(""+theDay.getDate().get(Calendar.YEAR));
 		labelForYear=new JLabel("年");
 		labelForMonth=new JLabel("月");
@@ -75,7 +74,7 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 		jpForTimeS=new JPanel();
 		jpForTimeS.setBorder(BorderFactory.createTitledBorder("开始时间"));
 		textHourS=new JTextField(2);
-		textHourS.setText("12");
+		textHourS.setText("8");
 		textMinS=new JTextField(2);
 		textMinS.setText("00");
 		jpForTimeS.add(textHourS);
@@ -84,7 +83,7 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 		jpForTimeE=new JPanel();
 		jpForTimeE.setBorder(BorderFactory.createTitledBorder("结束时间"));
 		textHourE=new JTextField(2);
-		textHourE.setText("13");
+		textHourE.setText("10");
 		textMinE=new JTextField(2);
 		textMinE.setText("00");
 		jpForTimeE.add(textHourE);
@@ -109,9 +108,9 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 		ddlDay=new JTextField(2);
 		ddlMonth=new JTextField(2);
 		ddlYear=new JTextField(4);
-		ddlDay.setText(""+theDay.getDate().get(Calendar.DAY_OF_MONTH));
-		ddlMonth.setText(""+(theDay.getDate().get(Calendar.MONTH)+1));
-		ddlYear.setText(""+theDay.getDate().get(Calendar.YEAR));
+		ddlDay.setText("");
+		ddlMonth.setText("");
+		ddlYear.setText("");
 		jpForDDL.add(ddlYear);
 		jpForDDL.add(new JLabel("年"));
 		jpForDDL.add(ddlMonth);
@@ -137,7 +136,7 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 		mainPanel.add(jpForRButton);
 		mainPanel.add(jpForButton);
 		setContentPane(mainPanel);
-		setLocationRelativeTo(this.frame);
+		setLocationRelativeTo(null);
 		setVisible(true);
 	}
 	@Override
@@ -146,30 +145,29 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 		if(source==cancelButton){
 			this.dispose();
 		}else if(source==okButton){
-			if(checkValid()){
+			if(checkValid()){//有效则继续
 				try{
-					boolean ifGet=getTheDay();
-					int type=getTypeForRoutine();
+					boolean ifGet=getTheDay();//根据填写获取日期
+					int type=getTypeForRoutine();//获取日常
 					boolean added=false;
 					if(0==type){
-						MyTask task=getTask();
+						MyTask task=getTask();//说明是任务，添加到任务当中
 						task.setStartTime(getTime(0));
 						task.setEndTime(getTime(1));
-						if(data.addTask(theDay, task));
-							added=true;
+						added=data.addTask(theDay, task);
 					}else{
-						MyRoutine routine=getRoutine();
+						MyRoutine routine=getRoutine();//否则添加日常
 						routine.setType(type);
 						routine.setStartTime(getTime(0));
 						routine.setEndTime(getTime(1));
-						if(data.addRoutine(theDay, routine))
-							added=true;
+						added=data.addRoutine(theDay, routine);
 					}
 					if(!ifGet){
-						dayList.getDayList().add(theDay);
+						dayList.getDayList().add(theDay);//如果没有得到日期，把新建的日期添加到dayList当中
 					}
 					if(added){
-						frame.dayView(year, month, day);
+						if(frame!=null)
+							frame.updateMyView();//添加好了返回
 						this.dispose();
 					}else{
 						JOptionPane.showMessageDialog(null, "时间冲突，需要调整！");
@@ -182,6 +180,7 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 			}
 		}
 	}
+	//获取日常类型
 	private int getTypeForRoutine(){
 		int type=0;
 		int cnt=1;
@@ -192,11 +191,13 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 		}
 		return type;
 	}
+	//检查是否填写
 	private boolean checkValid(){
 		if(textName.getText().equals(""))
 			return false;
 		return true;
 	}
+	//获取填写的任务
 	private MyTask getTask(){
 		MyTask task=new MyTask();
 		task.setName(textName.getText());
@@ -205,6 +206,7 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 		task.setDeadLine(getDDL());
 		return task;
 	}
+	//获取日常
 	private MyRoutine getRoutine(){
 		MyRoutine routine=new MyRoutine();
 		routine.setName(textName.getText());
@@ -212,10 +214,12 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 		routine.setPriority(getPriority());
 		return routine;
 	}
+	//获取日期
 	private boolean getTheDay() throws NumberFormatException{
 		year=Integer.parseInt(textYear.getText());
 		month=Integer.parseInt(textMonth.getText());
 		day=Integer.parseInt(textDay.getText());
+		theDay=null;
 		theDay=dayList.getDay(year, month, day);
 		if(theDay==null){
 			theDay=new MyDay();
@@ -225,12 +229,14 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 		theDay.getDate().set(year, month-1, day);
 		return true;
 	}
+	//获取优先级
 	private MyPriority getPriority(){
 		MyPriority priority=new MyPriority();
 		priority.setImportance(Integer.parseInt((String)textImp.getSelectedItem()));
 		priority.setUrgency(Integer.parseInt((String)textUrg.getSelectedItem()));
 		return priority;
 	}
+	//获取deadline
 	private Calendar getDDL(){
 		Calendar deadLine=Calendar.getInstance();
 		try{
@@ -239,10 +245,11 @@ public class AddActivityInDayView extends JDialog implements ActionListener {
 					Integer.parseInt(ddlDay.getText()));
 		}catch(Exception e1) {
         	JOptionPane.showMessageDialog(null,"截止日期输入有误！默认与日期设置相同！");
-        	deadLine.set(year, month, day);
+        	deadLine.set(year, month-1, day);
         }
 		return deadLine;	
 	}
+	//获取时间，开始时间，结束时间
 	private MyTime getTime(int i) throws Exception{
 		if(i==0){
 			return new MyTime(Integer.parseInt(textHourS.getText()),

@@ -8,13 +8,11 @@ public class MyCourse extends MyActivity implements Serializable{
 	
 	private String teacher;
 	private String ctype;
-	private String weekType;
-	
-	private int tableId;
-	private int dayOfWeek;
-	private int key;
+	private String weekType;//全周、双周、单周、前八周等
+	private int tableId;//在课程表中显示的位置
+	private int dayOfWeek;//周几
+	private int key;//用于课程表中微子显示唯一确定
 	public MyCourse(){
-		
 	}
 	public MyCourse(String name){
 		this.name=name;
@@ -56,7 +54,6 @@ public class MyCourse extends MyActivity implements Serializable{
 		updateKey();
 		return key;
 	}
-	
 	public String getWeekType() {
 		return weekType;
 	}
@@ -64,31 +61,7 @@ public class MyCourse extends MyActivity implements Serializable{
 		this.weekType = weekType;
 	}
 	private String getStringDayOfWeek(){
-		String s=null;
-		switch(this.dayOfWeek){
-			case 1:
-				s="周日";
-				break;
-			case 2:
-				s="周一";
-				break;
-			case 3:
-				s="周二";
-				break;
-			case 4:
-				s="周三";
-				break;
-			case 5:
-				s="周四";
-				break;
-			case 6:
-				s="周五";
-				break;
-			case 7:
-				s="周六";
-				break;
-		}
-		return s;
+		return this.getStringDayOfWeek(this.dayOfWeek);
 	}
 	public String getStringDayOfWeek(int i){
 		String s=null;
@@ -120,6 +93,7 @@ public class MyCourse extends MyActivity implements Serializable{
 		}
 		return s;
 	}
+	//设置课程的时间
 	public boolean setTime(String time){
 		try{
 			int temp=Integer.parseInt(time);
@@ -137,6 +111,7 @@ public class MyCourse extends MyActivity implements Serializable{
 			return false;
 		}
 	}
+	//根据tableId更新课程的开始结束时间
 	public void updateTime(){
 		setStartTime(MyTime.getCourseStartTime(tableId));
 		setEndTime(MyTime.getCourseEndTime(tableId));

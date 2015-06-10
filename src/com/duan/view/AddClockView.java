@@ -27,14 +27,12 @@ import com.duan.model.MyTime;
 public class AddClockView extends JDialog implements KeyListener, ActionListener{
 	private static final int WIDTH=300;
 	private static final int HEIGHT=530;
-	
 	private JSplitPane jpForTime;
 	private JLabel labelHour, labelMin,label,labelMemo;
     private JTextField textHour, textMin,textMemo;
     private JPanel leftJp,rightJp;
     private JPanel  mainPanel,setTypePanel,jrButtonPanel, buttonPanel;
     private JButton btnOk, btnCancel, btnBack;
-
     private JRadioButton[] jr={new JRadioButton("单次",true),
     		new JRadioButton("周日"),new JRadioButton("周一"),
     		new JRadioButton("周二"),new JRadioButton("周三"),
@@ -44,10 +42,9 @@ public class AddClockView extends JDialog implements KeyListener, ActionListener
     private Font font=new Font(Font.SERIF, Font.PLAIN, 18);
     private Calendar cal = Calendar.getInstance();
     
-    private MyClockList list;
-    private ClockView frame;
-	public AddClockView(ClockView sframe,MyClockList list){
-		super(sframe);
+    private MyClockList list;//闹钟列表
+    private MyView frame;
+	public AddClockView(MyView sframe,MyClockList list){
 		setTitle("闹钟设置");
         setModal(true); // 设置为模窗口，就是说在本弹窗未消失时不允许点击主界面。
         this.list=list;
@@ -108,7 +105,7 @@ public class AddClockView extends JDialog implements KeyListener, ActionListener
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         mainPanel.add(setTypePanel, BorderLayout.CENTER);
         setContentPane(mainPanel);
-		setLocationRelativeTo(frame);
+		setLocationRelativeTo(null);
 		setVisible(true);
 	}
 	@Override
@@ -144,7 +141,7 @@ public class AddClockView extends JDialog implements KeyListener, ActionListener
             clock.setType(type);
             clock.updateType();
             this.list.getClockList().add(clock);//
-            this.frame.loadView();
+            this.frame.updateMyView();
             this.dispose();
         } else if(source == btnCancel) { // 点击取消按钮时取消计时
         	this.dispose();
@@ -166,6 +163,7 @@ public class AddClockView extends JDialog implements KeyListener, ActionListener
             e.consume(); //关键，屏蔽掉非法输入  
         } 
 	}
+	//获取闹钟类型
 	private int getTypeForClock(){
 		int type=0;
 		int cnt=1;

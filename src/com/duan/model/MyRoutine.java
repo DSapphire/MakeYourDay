@@ -2,12 +2,13 @@ package com.duan.model;
 
 import java.io.Serializable;
 
-public class MyRoutine extends MyActivity implements Serializable {
-	private String sType;//
-	private boolean[] bType;
+public class MyRoutine extends MyActivity implements Serializable,MyType {
+	private String sType;//类型的字符表示方法
+	private boolean[] bType;//bType[i]表示一周中当天是否会响
 	public String getsType() {
 		return sType;
 	}
+	//通过type更新bType和sType
 	public void updateType(){
 		if(bType==null)
 			bType=new boolean[7];
@@ -37,6 +38,7 @@ public class MyRoutine extends MyActivity implements Serializable {
 			sType=sb.toString();
 		}
 	}
+	//一周中的当天是否包含在类型当中
 	public boolean isTodayIncluded(int dayOfWeek){
 		updateType();
 		return bType[dayOfWeek-1];

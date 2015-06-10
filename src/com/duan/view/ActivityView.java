@@ -11,26 +11,26 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import com.duan.model.*;
-public class ActivityView extends JDialog {
+public class ActivityView extends JDialog implements MyView{
 	private static final int WIDTH = 400;
 	private static final int HEIGHT = 400;
-	private MyDayList dayList;
+	private MyDayList dayList;//传进来的数据
 	private Calendar today = Calendar.getInstance();
-	private ArrayList<MyDay> list;
-	private int days=7;
+	private ArrayList<MyDay> list;//需要显示那些天的日程
+	private int days=7;//默认显示7天内的事项
 	private JPanel mainPanel;
 	private JScrollPane jspForImpAndUrg, jspForNImpUrg, jspForImpNUrg,
 			jspForNImpNUrg;
 	private JList<String> listForImpAndUrg, lisForNImpUrg, lisForImpNUrg,
 			lisForNImpNUrg;
 	public ActivityView(MyDayList dayList,int day) {
-		setTitle(day+"天内代办事项");
+		setTitle(day+"天内待办事项");
 		setModal(true);
 		this.dayList = dayList;
 		this.days=day;
 		this.list=new ArrayList<>();
 	}
-	public void activityView() {
+	public void loadView() {
 		setSize(WIDTH, HEIGHT);
 		getList(days);
 		listForImpAndUrg = new JList<>(getVectorForList(true, true));
@@ -54,32 +54,37 @@ public class ActivityView extends JDialog {
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}
+	//返回用于列表显示的元素集合,用于列表显示
 	private Vector<String> getVectorForList(boolean imp, boolean urg) {
 		Vector<String> vector = new Vector<>();
 		DateFormat df = new SimpleDateFormat("Y/M/d ");
+		int k=0;
 		for(int i=0;i<list.size();i++){
 			ArrayList<MyTask> task=list.get(i).getTaskList();
 			ArrayList<MyRoutine> routine=list.get(i).getRoutineList();
 			String s=df.format(list.get(i).getDate().getTime())+":";
-			if(!task.isEmpty()){
+			if(task!=null&&!task.isEmpty()){
 				for(int j=0;j<task.size();j++){
 					MyPriority priority=task.get(j).getPriority();
 					if(imp==priority.isImp(3)&&urg==priority.isUrg(3)){
-						vector.addElement((j+1)+"."+s+task.get(j).toString());
+						vector.addElement((k+1)+"."+s+task.get(j).toString());
+						k++;
 					}
 				}
 			}
-			if(!routine.isEmpty()){
+			if(routine!=null&&!routine.isEmpty()){
 				for(int j=0;j<routine.size();j++){
 					MyPriority priority=routine.get(j).getPriority();
 					if(imp==priority.isImp(3)&&urg==priority.isUrg(3)){
-						vector.addElement((j+1)+"."+s+routine.get(j).toString());
+						vector.addElement((k+1)+"."+s+routine.get(j).toString());
+						k++;
 					}
 				}
 			}
 		}
 		return vector;
 	}
+	//从dayList中获取最近默认天数的MyDay的list
 	private void getList(int day){
 		ArrayList<MyDay> daylist = dayList.getDayList();
 		int comp = today.get(Calendar.DAY_OF_YEAR);
@@ -95,5 +100,9 @@ public class ActivityView extends JDialog {
 				}
 			}
 		}
+	}
+	@Override
+	public void updateMyView() {
+		loadView();
 	}
 }

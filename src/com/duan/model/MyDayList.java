@@ -15,6 +15,7 @@ public class MyDayList implements Serializable{
 	public void setDayList(ArrayList<MyDay> dayList) {
 		this.dayList = dayList;
 	}
+	//根据年月日返回当天
 	public MyDay getDay(int year,int month,int day){
 		Calendar cal;
 		for(int i=0;i<this.dayList.size();i++){

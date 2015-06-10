@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.AbstractListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -14,7 +15,7 @@ import javax.swing.JScrollPane;
 
 import com.duan.model.*;
 
-public class TaskView extends JDialog implements ActionListener{
+public class TaskView extends JDialog implements ActionListener,MyView{
 	private static final int WIDTH = 330;
 	private static final int HEIGHT = 400;
 	private MyData data;
@@ -29,7 +30,7 @@ public class TaskView extends JDialog implements ActionListener{
 		this.data=data;
 		this.list=data.getTaskList();
 	}
-	public void taskView(){
+	public void loadView(){
 		setSize(WIDTH, HEIGHT);
 		setLocationRelativeTo(null);
 		taskJList=new JList<String>(new TaskDataModel());
@@ -55,7 +56,8 @@ public class TaskView extends JDialog implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		Object source=e.getSource();
 		if(source==addButton){
-			AddDayView addView=new AddDayView(data);
+			MyDay theDay=new MyDay();
+			AddActivityInDayView addView=new AddActivityInDayView(this,theDay,data);
 			addView.loadView();
 		}else if(source==rmButton){
 			int index=taskJList.getSelectedIndex();
@@ -63,11 +65,12 @@ public class TaskView extends JDialog implements ActionListener{
 				MyTask task=list.getTaskList().get(index);
 				data.removeTask(task);
 			}
-			taskView();
+			updateMyView();
 		}else if(source==backButton){
 			this.dispose();
 		}
 	}
+	//用于显示任务
 	class TaskDataModel extends AbstractListModel<String> {
 		@Override
 		public String getElementAt(int index) {
@@ -83,5 +86,9 @@ public class TaskView extends JDialog implements ActionListener{
 			else
 				return 0;
 		}
+	}
+	@Override
+	public void updateMyView() {
+		loadView();
 	}
 }

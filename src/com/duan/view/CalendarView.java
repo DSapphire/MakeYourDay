@@ -6,11 +6,14 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -19,19 +22,21 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import com.duan.model.*;
-public class CalendarView extends JDialog implements ActionListener {
+public class CalendarView extends JDialog implements ActionListener,MyView{
 	private static final int WIDTH = 550;
 	private static final int HEIGHT = 600;
-	private MyData data;
+	private MyData data;//数据
 	private MyDayList dayList;
 	private Calendar today = Calendar.getInstance();
-	private Timer timer;
+	private Timer timer;//用于更新时间显示
+	private ClickOnDate clickOnDate;//updated for straight click on date area to show dayview
+	private int year,month;//update
 	private DateFormat df = new SimpleDateFormat("HH : mm : ss  Y/M/d  E");
 	private Font font = new Font(Font.SERIF, Font.PLAIN, 20);
 	private Calendar cal = Calendar.getInstance();
 	private JPanel mainPanel, jpForTime, jpForDay, jpForButton;
 	private JLabel labelForTime, labelForMonth;
-	private JButton addButton, lookButton, todayButton, preButton, nextButton;
+	private JButton todayButton, preButton, nextButton;
 	private JLabel[] labelForWeek;
 	private JTextArea[] textForDay;
 	public CalendarView(MyData data) {
@@ -39,12 +44,13 @@ public class CalendarView extends JDialog implements ActionListener {
 		setModal(true);
 		this.data=data;
 		this.dayList=data.getDayList();
+		clickOnDate=new ClickOnDate();
 	}
 	public void loadView() {
 		setSize(WIDTH, HEIGHT);
 		setLocationRelativeTo(null);
 		jpForDay = new JPanel();
-		updateView();
+		updateMyView();
 		jpForTime = new JPanel(new BorderLayout());
 		labelForTime = new JLabel();
 		labelForTime.setFont(font);
@@ -62,15 +68,11 @@ public class CalendarView extends JDialog implements ActionListener {
 		labelForMonth.setText(cal.get(Calendar.YEAR) + "年"
 				+ (cal.get(Calendar.MONTH) + 1) + "月");
 		labelForMonth.setFont(font);
-		addButton = new JButton("添加");
-		addButton.addActionListener(this);
-		lookButton = new JButton("查看");
-		lookButton.addActionListener(this);
 		labelForMonth.setHorizontalAlignment(JLabel.CENTER);
 		jpForButton.add(preButton);
-		jpForButton.add(addButton);
+		jpForButton.add(new JLabel());
 		jpForButton.add(labelForMonth);
-		jpForButton.add(lookButton);
+		jpForButton.add(new JLabel());
 		jpForButton.add(nextButton);
 		mainPanel = new JPanel(new BorderLayout());
 		mainPanel.add(jpForDay, BorderLayout.CENTER);
@@ -80,20 +82,14 @@ public class CalendarView extends JDialog implements ActionListener {
 		initTimer();
 		setVisible(true);
 	}
-	public void updateView(){
+	public void updateMyView(){
 		cal = Calendar.getInstance();
 		drawDay(cal);
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
-		if (source == addButton) {
-			AddDayView addView = new AddDayView(this,data);
-			addView.loadView();
-		} else if (source == lookButton) {
-			AddDayView addView = new AddDayView(this,data);
-			addView.loadView();
-		} else if (source == todayButton) {
+		if (source == todayButton) {
 			cal = Calendar.getInstance();
 			labelForMonth.setText(cal.get(Calendar.YEAR) + "年"
 					+ (cal.get(Calendar.MONTH) + 1) + "月");
@@ -127,8 +123,8 @@ public class CalendarView extends JDialog implements ActionListener {
 		int days = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 		int first = cal.get(Calendar.DAY_OF_WEEK);
 		int weeks = (days + first - 1 + 6) / 7;// +6
-		int month = cal.get(Calendar.MONTH)+1;
-		int year = cal.get(Calendar.YEAR);
+		month = cal.get(Calendar.MONTH)+1;
+		year = cal.get(Calendar.YEAR);
 		jpForDay.setLayout(new GridLayout(weeks + 1, 7, 2, 2));
 		jpForDay.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		labelForWeek = new JLabel[7];
@@ -153,6 +149,7 @@ public class CalendarView extends JDialog implements ActionListener {
 			drawTextDay(year, month, i);
 			textForDay[i]
 					.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			textForDay[i].addMouseListener(clickOnDate);//update
 			jpForDay.add(textForDay[i]);
 		}
 		jpForDay.revalidate();
@@ -181,8 +178,23 @@ public class CalendarView extends JDialog implements ActionListener {
 			textForDay[i].setBackground(Color.RED);
 		}
 	}
-	public void drawDayView(int year, int month, int day) {
-		DayView dayView = new DayView(this, data);
-		dayView.dayView(year, month, day);
+	private void drawDayView(int year, int month, int day) {
+		MyDay theDay=data.getDayList().getDay(year, month, day);
+		MyView dayView = new DayView(this,theDay,data);
+		dayView.loadView();
+	}
+	class ClickOnDate extends MouseAdapter{
+		public ClickOnDate(){
+			super();
+		}
+		public void mousePressed(MouseEvent e){
+			Object o=e.getSource();
+			for(int i=0;i<textForDay.length;i++){
+				if(o==textForDay[i]){
+					drawDayView(year,month,i+1);
+					break;
+				}
+			}
+		}
 	}
 }

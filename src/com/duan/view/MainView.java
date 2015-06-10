@@ -32,12 +32,11 @@ import com.duan.model.*;
 import com.duan.util.ActivityOptimizer;
 import com.duan.util.ActivityReminder;
 
-public class MainView extends JFrame implements ActionListener {
-
+public class MainView extends JFrame implements ActionListener,MyView{
 	private static final int WIDTH = 328;
 	private static final int HEIGHT = 300;
-	private MyData data;//
-	private ActivityReminder reminder;
+	private MyData data;//数据
+	private ActivityReminder reminder;//
 	private MyDay theDay;
 	private Calendar today = Calendar.getInstance();
 	private Timer timer;
@@ -93,15 +92,16 @@ public class MainView extends JFrame implements ActionListener {
 		initTimer();
 		this.addWindowListener(new MainViewClosing(this));
 	}
+	//加载数据
 	private void loadData() {
 		data = new MyData();
 		reminder=new ActivityReminder();
 		data.addObserver(reminder);
 		data.readData();
-		ActivityOptimizer ao=new ActivityOptimizer();//
+		ActivityOptimizer ao=new ActivityOptimizer();//简单的优化
 		if(ao.log()){
 			ao.optimize(data.getTaskList());
-			reminder.updataData(data);//日志
+			reminder.updateData(data);//更新数据
 		}
 		int year=today.get(Calendar.YEAR),
 				month=today.get(Calendar.MONTH) + 1,
@@ -117,6 +117,7 @@ public class MainView extends JFrame implements ActionListener {
 			dayList.getDayList().add(theDay);
 		}
 	}
+	//保存数据
 	private void saveData() {
 		if (!data.saveData()) {
 			JOptionPane.showMessageDialog(null, "Data Save Erro!", "Erro",
@@ -140,22 +141,23 @@ public class MainView extends JFrame implements ActionListener {
 				table=new MyCourseTable();
 				data.setTable(table);
 			}
-			CourseTableView tView = new CourseTableView(this,table);//
-			tView.courseTableRepaint();
+			MyView tView = new CourseTableView(table);//
+			tView.loadView();
 		} else if (source == clockVButton) {
-			ClockView cView = new ClockView(data.getClockList());
+			MyView cView = new ClockView(data.getClockList());
 			cView.loadView();
 		} else if (source == actVButton) {
-			ActivityView aView = new ActivityView(data.getDayList(), 7);
-			aView.activityView();
+			MyView aView = new ActivityView(data.getDayList(), 7);
+			aView.loadView();
 		} else if (source == taskVButton) {
-			TaskView taskView = new TaskView(data);
-			taskView.taskView();
+			MyView taskView = new TaskView(data);
+			taskView.loadView();
 		} else if (source == routineVButton) {
-			RoutineView rView = new RoutineView(data);
-			rView.routineView();
+			MyView rView = new RoutineView(data);
+			rView.loadView();
 		}
 	}
+	//显示时间
 	private void initTimer() {
 		timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
@@ -166,6 +168,7 @@ public class MainView extends JFrame implements ActionListener {
 			}
 		}, 0, 1000L);
 	}
+	//窗口关闭动作
 	class MainViewClosing extends WindowAdapter {
 		MainView view;
 		public MainViewClosing(MainView view) {
@@ -177,6 +180,7 @@ public class MainView extends JFrame implements ActionListener {
 			System.exit(0);
 		}
 	}
+	//用于显示一个gif
 	class ImageViewer extends JPanel{
 		private Image image;
 		private int xCoordinate;
@@ -200,5 +204,9 @@ public class MainView extends JFrame implements ActionListener {
 				g.drawImage(image,xCoordinate,yCoordinate,getSize().width,getSize().height,this);
 			}
 		}
+	}
+	@Override
+	public void updateMyView() {
+		loadView();
 	}
 }	

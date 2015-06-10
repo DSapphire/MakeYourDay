@@ -19,10 +19,10 @@ import javax.swing.JTextArea;
 
 import com.duan.model.*;
 
-public class CourseTableView extends JDialog implements ActionListener {
+public class CourseTableView extends JDialog implements ActionListener,MyView{
 	private static final int WIDTH = 1000;
 	private static final int HEIGHT = 500;
-	private MyCourseTable table;
+	private MyCourseTable table;//课程表
 	private int max = 6;
 	private JPanel jpForCourse, mainPanel, jpForTitle, jpForButton, jpForTable,
 			jpForId;
@@ -30,13 +30,12 @@ public class CourseTableView extends JDialog implements ActionListener {
 	private JTextArea[][] buttonForCourse;
 	private JButton addButton, rmButton;
 	private JLabel[] buttonForDayOfWeek, buttonForId;
-	
-	public CourseTableView(MainView mainView,MyCourseTable table) {
+	public CourseTableView(MyCourseTable table) {
 		setTitle("课程表");
 		setModal(true);
 		this.table = table;
 	}
-	public void courseTableRepaint() {
+	public void loadView() {
 		setSize(WIDTH, HEIGHT);
 		setLocationRelativeTo(null);
 		jpForCourse = new JPanel(new GridLayout(7, 7));
@@ -58,7 +57,7 @@ public class CourseTableView extends JDialog implements ActionListener {
 					.createLineBorder(Color.BLACK));
 			jpForId.add(buttonForId[i]);
 		}
-		updateView();
+		updateMyView();
 		jpForTable = new JPanel(new BorderLayout());
 		jpForTable.add(jpForCourse, BorderLayout.CENTER);
 		jpForTable.add(jpForId, BorderLayout.WEST);
@@ -82,7 +81,7 @@ public class CourseTableView extends JDialog implements ActionListener {
 		setContentPane(mainPanel);
 		setVisible(true);
 	}
-	public void updateView(){
+	public void updateMyView(){
 		jpForCourse.removeAll();
 		MyCourse course=new MyCourse();
 		for (int i = 1; i < 8; i++) {
@@ -115,7 +114,7 @@ public class CourseTableView extends JDialog implements ActionListener {
 		Object source = e.getSource();
 		if (source == addButton) {
 			AddCourseView addView = new AddCourseView(this, table, max);
-			addView.addCourseView();
+			addView.loadView();
 		} else if (source == rmButton) {
 			RemoveCourseView rmView=new RemoveCourseView(this, table,max);
 			rmView.removeCourseView();

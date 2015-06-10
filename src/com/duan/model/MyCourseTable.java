@@ -5,11 +5,9 @@ import java.util.ArrayList;
 
 public class MyCourseTable implements Serializable {
 
-	private ArrayList<ArrayList<MyCourse>> courseTable;
-
+	private ArrayList<ArrayList<MyCourse>> courseTable;//一周的课程
 	public MyCourseTable() {
 		this.courseTable = new ArrayList<ArrayList<MyCourse>>();
-		//ArrayList<MyCourse> list;
 		for (int i = 0; i < 7; i++){
 			courseTable.add(new ArrayList<MyCourse>());
 		}
@@ -17,7 +15,7 @@ public class MyCourseTable implements Serializable {
 	public ArrayList<ArrayList<MyCourse>> getTable() {
 		return this.courseTable;
 	}
-
+	//添加课程
 	public boolean addCourse(MyCourse course) {
 		if (isValid(course)) {
 			this.courseTable.get(course.getDayOfWeek() - 1).add(course);
@@ -25,7 +23,7 @@ public class MyCourseTable implements Serializable {
 		} 
 		return false;
 	}
-
+	//删除课程
 	public boolean removeCourse(MyCourse course) {
 		return this.courseTable.get(course.getDayOfWeek() - 1).remove(course);
 	}
@@ -40,13 +38,14 @@ public class MyCourseTable implements Serializable {
 	public boolean removeCourse(String name) {
 		for(int i=0;i<7;i++){
 			for(MyCourse course:this.courseTable.get(i)){
-				if(course.getName()==name){
+				if(course.getName().equals(name)){
 					return this.courseTable.get(i).remove(course);
 				}
 			}
 		}
 		return false;
 	}
+	//根据课程唯一的key确定课程是否可以添加
 	public boolean isValid(MyCourse course) {
 		boolean valid = true;
 		ArrayList<MyCourse> list = this.courseTable.get(course.getDayOfWeek() - 1);
@@ -70,15 +69,4 @@ public class MyCourseTable implements Serializable {
 			}
 		return null;
 	}
-	
-	public String toPlainText() {
-		String text = null;
-		return text;
-	}
-
-	@Override
-	public String toString() {
-		return "MyCourseTable [courseTable=" + courseTable + "]";
-	}
-
 }

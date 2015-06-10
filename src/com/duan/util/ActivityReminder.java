@@ -10,41 +10,47 @@ import java.util.TimerTask;
 import com.duan.model.*;
 import com.duan.view.ClockRingView;
 import com.duan.view.ReminderView;
-
+//观察者模式
 public class ActivityReminder implements Observer{
 	
 	private ArrayList<MyTask> tList;
 	private ArrayList<MyRoutine> rList;
 	private ArrayList<MyCourse> cList;
-	private MyClockList clock;
+	private MyClockList clock;//闹钟
 	private Timer timer;
-	private MyTimeTask task;
+	private MyTimeTask task;//自定的任务线程，用于检查时间是否到了提醒用户
 	private Calendar today=Calendar.getInstance();
-	private int year,month,day;
-	private int setAdvance=10;
-	private RingClock ring;
+	private int year,month,day;//年月日
+	private int setAdvance=10;//默认的提前时间是10分钟
+	private RingClock ring;//闹钟播放
 	public ActivityReminder() {
 		timer=new Timer();
 		task=new MyTimeTask();
 		ring=new RingClock();
 	}
-	public void updataData(MyData data){
+	//当data变化时，提醒的数据需要更新
+	public void updateData(MyData data){
 		year=today.get(Calendar.YEAR);
 		month=today.get(Calendar.MONTH)+1;
 		day=today.get(Calendar.DAY_OF_MONTH);
-		tList=data.getDayList().getDay(year, month, day).getTaskList();
-		rList=data.getDayList().getDay(year, month, day).getRoutineList();
-		cList=data.getDayList().getDay(year, month, day).getCourseList();
-		clock=data.getClockList();
-		startReminder();
+		MyDay myday=data.getDayList().getDay(year, month, day);
+		if(myday!=null){
+			tList=myday.getTaskList();
+			rList=myday.getRoutineList();
+			cList=myday.getCourseList();
+			clock=data.getClockList();
+			startReminder();
+		}
 	}
+	//开始检查是否需要提醒
 	private void startReminder(){
-		task.stopRunning();
+		task.stopRunning();//舍弃之前的
 		timer.cancel();
-		task=new MyTimeTask();
+		task=new MyTimeTask();//新建一个
 		timer=new Timer();
-		timer.scheduleAtFixedRate(task, 0, 30000L);//30 seconds
+		timer.scheduleAtFixedRate(task, 0, 60000L);//60 seconds检查一次
 	}
+	//检查时间是否到
 	private boolean checkTime(MyTime time){
 		today=Calendar.getInstance();
 		int hour=today.get(Calendar.HOUR_OF_DAY);
@@ -54,6 +60,7 @@ public class ActivityReminder implements Observer{
 		}
 		return false;
 	}
+	//检查闹钟
 	private MyClock checkClock(){
 		int dayOfWeek=today.get(Calendar.DAY_OF_WEEK);
 		if(clock!=null){
@@ -77,6 +84,7 @@ public class ActivityReminder implements Observer{
 		}
 		return null;
 	}
+	//检查任务
 	private MyTask checkTask(){
 		if(tList!=null&&!tList.isEmpty()){
 			for(int i=0;i<tList.size();i++){
@@ -87,6 +95,7 @@ public class ActivityReminder implements Observer{
 		}
 		return null;
 	}
+	//检查课程
 	private MyCourse checkCourse(){
 		if(cList!=null&&!cList.isEmpty()){
 			for(int i=0;i<cList.size();i++){
@@ -97,6 +106,7 @@ public class ActivityReminder implements Observer{
 		}
 		return null;
 	}
+	//检查日常
 	private MyRoutine checkRoutine(){
 		int dayOfWeek=today.get(Calendar.DAY_OF_WEEK);
 		if(rList!=null&&!rList.isEmpty()){
@@ -111,6 +121,7 @@ public class ActivityReminder implements Observer{
 		}
 		return null;
 	}
+	//自定的检查任务线程
 	class MyTimeTask extends TimerTask{
 		private boolean running;
 		public MyTimeTask() {
@@ -122,7 +133,6 @@ public class ActivityReminder implements Observer{
 		@Override
 		public void run() {
 			if(this.running){
-				
 				MyClock clock=checkClock();
 				if(clock!=null){
 					ring.startRing();
@@ -144,16 +154,16 @@ public class ActivityReminder implements Observer{
 					ring.startRing();
 					rv.view();
 				}
-					
 			}
 		}
 		
 	}
+	//当data变化时自动调用update
 	@Override
 	public void update(Observable o, Object arg) {
 		if(o instanceof MyData){
 			MyData data=(MyData)o;
-			updataData(data);
+			updateData(data);
 		}
 	}
 }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 public class MyClockList implements Serializable{
 	private ArrayList<MyClock> clockList;
-	
 	public MyClockList() {
 		clockList=new ArrayList<MyClock>();
 	}

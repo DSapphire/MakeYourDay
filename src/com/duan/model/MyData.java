@@ -6,13 +6,12 @@ import java.util.Observable;
 import com.duan.util.ActivityReminder;
 import com.duan.util.SaveAndRead;
 public class MyData extends Observable{
-	//需要载入的数据
-	private MyClockList clockList;
-	private MyDayList dayList;
-	private MyCourseTable table;
-	private MyTaskList taskList;
-	private MyRoutineList routineList;
-	
+	//需要载入的数据，在view之间传递
+	private MyClockList clockList;//闹钟
+	private MyDayList dayList;//日程
+	private MyCourseTable table;//课程表
+	private MyTaskList taskList;//任务
+	private MyRoutineList routineList;//日常
 	public MyClockList getClockList() {
 		return clockList;
 	}
@@ -43,6 +42,7 @@ public class MyData extends Observable{
 	public void setRoutineList(MyRoutineList routineList) {
 		this.routineList = routineList;
 	}
+	//从文件读取数据
 	public void readData(){
 		this.clockList=SaveAndRead.readClockList();
 		this.table=SaveAndRead.readCourseTable();
@@ -65,6 +65,7 @@ public class MyData extends Observable{
 			routineList=new MyRoutineList();
 		}
 	}
+	//保存数据
 	public boolean saveData(){
 		try {
 			SaveAndRead.saveClockList(this.clockList);
@@ -77,6 +78,7 @@ public class MyData extends Observable{
 			return false;
 		}
 	}
+	//把任务添加到当天以及任务列表中
 	public boolean addTask(MyDay theDay, MyTask task){
 		if(theDay.addTask(task)){
 			taskList.getTaskList().add(task);
@@ -84,15 +86,13 @@ public class MyData extends Observable{
 		}
 		return false;
 	}
+	//把日常从日常列表添加到日程中
 	public void addRoutine(){
-		for(MyRoutine routine:routineList.getRoutineList()){
-			for(MyDay day:dayList.getDayList()){
-				if(routine.isTodayIncluded(day.getDate().get(Calendar.DAY_OF_WEEK))){
-					day.addRoutine(routine);
-				}
-			}
+		for(MyDay day:dayList.getDayList()){
+			day.addRoutine(routineList);
 		}
 	}
+	//把日常添加到当天以及日常列表中
 	public boolean addRoutine(MyDay theDay,MyRoutine routine){
 		if(routine.isTodayIncluded(theDay.getDate().get(Calendar.DAY_OF_WEEK)))
 			if(!theDay.addRoutine(routine))
@@ -105,22 +105,26 @@ public class MyData extends Observable{
 		routineList.getRoutineList().add(routine);
 		return true;
 	}
+	//从任务列表删除任务
 	public void removeTask(MyTask task){
 		for(MyDay day:dayList.getDayList()){
 			day.removeTask(task);
 		}
 		taskList.getTaskList().remove(task);
 	}
+	//从当天以及任务列表中删除任务
 	public void removeTask(MyDay theDay,MyTask task){
 		theDay.removeTask(task);
 		taskList.getTaskList().remove(task);
 	}
+	//从日常列表删除日常
 	public void removeRoutine(MyRoutine routine){
 		for(MyDay day:dayList.getDayList()){
 			day.removeRoutine(routine);
 		}
 		routineList.getRoutineList().remove(routine);
 	}
+	//从当天以及日常列表中删除日常
 	public void removeRoutine(MyDay theDay,MyRoutine routine){
 		theDay.removeRoutine(routine);
 		routineList.getRoutineList().remove(routine);
