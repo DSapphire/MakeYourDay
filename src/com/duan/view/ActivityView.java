@@ -5,11 +5,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Vector;
+
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
 import com.duan.model.*;
 public class ActivityView extends JDialog implements MyView{
 	private static final int WIDTH = 400;
@@ -52,6 +54,7 @@ public class ActivityView extends JDialog implements MyView{
 		mainPanel.add(jspForNImpNUrg);
 		setContentPane(mainPanel);
 		setLocationRelativeTo(null);
+		addWindowListener(new MyViewAdapter(this));
 		setVisible(true);
 	}
 	//返回用于列表显示的元素集合,用于列表显示
@@ -104,5 +107,9 @@ public class ActivityView extends JDialog implements MyView{
 	@Override
 	public void updateMyView() {
 		loadView();
+	}
+	@Override
+	public void closingView() {
+		this.dispose();
 	}
 }

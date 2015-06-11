@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
+
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -48,6 +49,7 @@ public class DayView extends JDialog implements ActionListener,MyView{
 		dayView(theDay.getDate().get(Calendar.YEAR),
 				theDay.getDate().get(Calendar.MONTH)+1,
 				theDay.getDate().get(Calendar.DAY_OF_MONTH));
+		addWindowListener(new MyViewAdapter(this));
 	}
 	private void dayView(int year, int month, int day) {
 		if(mainPanel!=null)
@@ -154,5 +156,9 @@ public class DayView extends JDialog implements ActionListener,MyView{
 		public int getSize() {
 			return theDay.getTaskList().size() + theDay.getRoutineList().size();
 		}
+	}
+	@Override
+	public void closingView() {
+		this.dispose();
 	}
 }

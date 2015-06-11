@@ -47,10 +47,12 @@ public class MainView extends JFrame implements ActionListener,MyView{
 	private JButton calVButton, actVButton, clockVButton, tableVButton,
 			taskVButton, routineVButton;
 	public MainView() {
-		super("主界面");
+		super("Make Your Day!");
 		loadData();
 	}
 	public void loadView() {
+		if(mainPanel!=null)
+			mainPanel.removeAll();
 		setSize(WIDTH, HEIGHT);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		jpForTime = new JPanel();
@@ -59,7 +61,7 @@ public class MainView extends JFrame implements ActionListener,MyView{
 		labelForTime.setHorizontalAlignment(JLabel.CENTER);
 		jpForTime.add(labelForTime);
 		jpForTime.setPreferredSize(new Dimension(WIDTH, HEIGHT / 8));
-		Image image=new ImageIcon("res/1.gif").getImage();
+		Image image=new ImageIcon("res/1.gif").getImage();//gif图片
 		ImageViewer iV=new ImageViewer(image);
 		iV.setPreferredSize(new Dimension(328,185));
 		jpForButton = new JPanel(new GridLayout(2, 3, 10, 5));
@@ -90,7 +92,7 @@ public class MainView extends JFrame implements ActionListener,MyView{
 		setLocationRelativeTo(null);
 		setVisible(true);
 		initTimer();
-		this.addWindowListener(new MainViewClosing(this));
+		this.addWindowListener(new MyViewAdapter(this));
 	}
 	//加载数据
 	private void loadData() {
@@ -128,12 +130,13 @@ public class MainView extends JFrame implements ActionListener,MyView{
 		saveData();
 		JOptionPane.showMessageDialog(this, "GoodBye!", "Quit",
 				JOptionPane.INFORMATION_MESSAGE);
+		System.exit(0);
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == calVButton) {
-			CalendarView cView = new CalendarView(data);
+			MyView cView = new CalendarView(data);
 			cView.loadView();
 		} else if (source == tableVButton) {
 			MyCourseTable table=data.getTable();
@@ -167,43 +170,6 @@ public class MainView extends JFrame implements ActionListener,MyView{
 				labelForTime.setText(df.format(cal.getTime()));
 			}
 		}, 0, 1000L);
-	}
-	//窗口关闭动作
-	class MainViewClosing extends WindowAdapter {
-		MainView view;
-		public MainViewClosing(MainView view) {
-			this.view = view;
-		}
-		@Override
-		public void windowClosing(WindowEvent e) {
-			view.closingView();
-			System.exit(0);
-		}
-	}
-	//用于显示一个gif
-	class ImageViewer extends JPanel{
-		private Image image;
-		private int xCoordinate;
-		private int yCoordinate;
-		public ImageViewer(){
-		}
-		public ImageViewer(Image image){
-			this.image=image;
-		}
-		public void setXCoordinate(int xCoordinate){
-			this.xCoordinate=xCoordinate;
-			repaint();
-		}
-		public void setYCoordinate(int yCoordinate){
-			this.yCoordinate=yCoordinate;
-			repaint();
-		}
-		protected void paintComponent(Graphics g){
-			super.paintComponent(g);
-			if(image!=null){
-				g.drawImage(image,xCoordinate,yCoordinate,getSize().width,getSize().height,this);
-			}
-		}
 	}
 	@Override
 	public void updateMyView() {

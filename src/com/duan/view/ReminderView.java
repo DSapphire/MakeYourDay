@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import com.duan.model.MyActivity;
 import com.duan.util.RingClock;
 
-public class ReminderView extends JFrame implements ActionListener {
+public class ReminderView extends JFrame implements ActionListener,MyView{
 	private static final int WIDTH =300;
 	private static final int HEIGHT =200;
 	private MyActivity act;
@@ -28,7 +28,7 @@ public class ReminderView extends JFrame implements ActionListener {
 		this.act=act;
 		this.ring=ring;
 	}
-	public void view(){
+	public void loadView(){
 		setSize(WIDTH, HEIGHT);
 		label1=new JLabel();
 		label1.setText(act.getStartTime().toString());
@@ -47,6 +47,7 @@ public class ReminderView extends JFrame implements ActionListener {
 		jp.add(label2,BorderLayout.CENTER);
 		jp.add(okButton,BorderLayout.SOUTH);
 		setContentPane(jp);
+		addWindowListener(new MyViewAdapter(this));
 		setVisible(true);
 	}
 	@Override
@@ -59,16 +60,9 @@ public class ReminderView extends JFrame implements ActionListener {
 	}
 	public void closingView(){
 		ring.stopRing();
-		dispose();
+		this.dispose();
 	}
-	class ViewClosing extends WindowAdapter {
-		ReminderView view;
-		public ViewClosing(ReminderView view) {
-			this.view=view;
-		}
-		@Override
-		public void windowClosing(WindowEvent e) {
-			view.closingView();
-		}
+	public void updateMyView() {
+		loadView();
 	}
 }

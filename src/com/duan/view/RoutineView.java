@@ -50,6 +50,7 @@ public class RoutineView extends JDialog implements ActionListener,MyView{
 		mainPanel.add(jspList,BorderLayout.CENTER);
 		mainPanel.add(jpForButton,BorderLayout.SOUTH);
 		setContentPane(mainPanel);
+		addWindowListener(new MyViewAdapter(this));
 		setVisible(true);
 	}
 	@Override
@@ -90,5 +91,9 @@ public class RoutineView extends JDialog implements ActionListener,MyView{
 	@Override
 	public void updateMyView() {
 		loadView();
+	}
+	@Override
+	public void closingView() {
+		this.dispose();
 	}
 }

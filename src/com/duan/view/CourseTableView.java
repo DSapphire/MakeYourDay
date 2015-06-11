@@ -79,6 +79,7 @@ public class CourseTableView extends JDialog implements ActionListener,MyView{
 		mainPanel.add(jpForTable, BorderLayout.CENTER);
 		mainPanel.add(jpForTitle, BorderLayout.NORTH);
 		setContentPane(mainPanel);
+		addWindowListener(new MyViewAdapter(this));
 		setVisible(true);
 	}
 	public void updateMyView(){
@@ -119,5 +120,9 @@ public class CourseTableView extends JDialog implements ActionListener,MyView{
 			RemoveCourseView rmView=new RemoveCourseView(this, table,max);
 			rmView.removeCourseView();
 		}
+	}
+	@Override
+	public void closingView() {
+		this.dispose();
 	}
 }

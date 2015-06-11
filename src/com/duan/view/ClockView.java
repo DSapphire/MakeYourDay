@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -73,6 +74,7 @@ public class ClockView extends JDialog implements ActionListener,MyView {
 		mainPanel.add(jspForClockList, BorderLayout.CENTER);
 		mainPanel.add(jpForTime, BorderLayout.NORTH);
 		setContentPane(mainPanel);
+		addWindowListener(new MyViewAdapter(this));
 		setVisible(true);
 		initTimer();
 	}
@@ -118,5 +120,9 @@ public class ClockView extends JDialog implements ActionListener,MyView {
 	@Override
 	public void updateMyView() {
 		loadView();
+	}
+	@Override
+	public void closingView() {
+		this.dispose();
 	}
 }

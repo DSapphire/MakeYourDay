@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import com.duan.model.MyClock;
 import com.duan.util.RingClock;
 
-public class ClockRingView extends JFrame implements ActionListener {
+public class ClockRingView extends JFrame implements ActionListener,MyView{
 	private static final int WIDTH =200;
 	private static final int HEIGHT =150;
 	private MyClock clock;
@@ -29,7 +29,7 @@ public class ClockRingView extends JFrame implements ActionListener {
 		this.clock=clock;
 		this.ring=ring;
 	}
-	public void view(){
+	public void loadView(){
 		setSize(WIDTH, HEIGHT);
 		label1=new JLabel();
 		label1.setText(clock.getTime().toString());
@@ -49,7 +49,7 @@ public class ClockRingView extends JFrame implements ActionListener {
 		jp.add(okButton,BorderLayout.SOUTH);
 		setContentPane(jp);
 		setVisible(true);
-		this.addWindowListener(new ViewClosing(this));
+		this.addWindowListener(new MyViewAdapter(this));
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -61,17 +61,10 @@ public class ClockRingView extends JFrame implements ActionListener {
 	}
 	public void closingView(){
 		ring.stopRing();
-		dispose();
+		this.dispose();
 	}
-	//设置窗口关闭动作
-	class ViewClosing extends WindowAdapter {
-		ClockRingView view;
-		public ViewClosing(ClockRingView view) {
-			this.view=view;
-		}
-		@Override
-		public void windowClosing(WindowEvent e) {
-			view.closingView();
-		}
+	@Override
+	public void updateMyView() {
+		loadView();
 	}
 }

@@ -137,7 +137,7 @@ public class ActivityReminder implements Observer{
 				if(clock!=null){
 					ring.startRing();
 					ClockRingView crv=new ClockRingView(clock,ring);//
-					crv.view();
+					crv.loadView();
 				}
 				MyTask task=checkTask();
 				MyRoutine routine=checkRoutine();
@@ -152,7 +152,7 @@ public class ActivityReminder implements Observer{
 				}
 				if(rv!=null){
 					ring.startRing();
-					rv.view();
+					rv.loadView();
 				}
 			}
 		}

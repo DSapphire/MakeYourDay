@@ -80,6 +80,7 @@ public class CalendarView extends JDialog implements ActionListener,MyView{
 		mainPanel.add(jpForButton, BorderLayout.SOUTH);
 		setContentPane(mainPanel);
 		initTimer();
+		addWindowListener(new MyViewAdapter(this));
 		setVisible(true);
 	}
 	public void updateMyView(){
@@ -196,5 +197,9 @@ public class CalendarView extends JDialog implements ActionListener,MyView{
 				}
 			}
 		}
+	}
+	@Override
+	public void closingView() {
+		this.dispose();
 	}
 }
